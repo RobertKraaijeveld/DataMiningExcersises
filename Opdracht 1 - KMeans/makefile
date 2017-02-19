@@ -7,13 +7,14 @@
 # %.o: %.cpp
 # 	g++ -static-libgcc -static-libstdc++ $(CC_FLAGS) -c -o  $@ $<
 
+#todo: Make this so that it automatically takes cpp files
 ccsrc = $(wildcard src/*.cpp) \
         $(wildcard src/CustomTypes/*.cpp) \
         $(wildcard src/Parser/*.cpp)
 
 obj = $(ccsrc:.cpp=.o)
 
-LDFLAGS = -lGL -lglut -lpng -lz -lm -static-libgcc -static-libstdc++
+LDFLAGS = -std=c++11 -static-libgcc -static-libstdc++ 
 
 main: $(obj)
 	$(CXX) -o $@ $^ $(LDFLAGS)

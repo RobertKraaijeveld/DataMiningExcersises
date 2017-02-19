@@ -1,8 +1,9 @@
 #include <string>
 #include <istream>
+#include "CsvParser.h"
 
 using namespace std;
-
+/*
 void CsvParser::readNextRow(std::istream &str)
 {
     string line;
@@ -24,3 +25,4 @@ void CsvParser::readNextRow(std::istream &str)
         m_data.push_back("");
     }
 }
+*/

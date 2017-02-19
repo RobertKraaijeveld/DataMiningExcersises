@@ -10,12 +10,11 @@ using namespace std;
 class CsvParser
 {
     private:
-     
-     istream& fileStr;
-     void readNextRow();
+    // istream& fileStr;
+    // void readNextRow(std::istream &str);
 
     public: 
-      int* getResult(istream& file);
+     // int* getResult(istream& file);
 };
 
 #endif
