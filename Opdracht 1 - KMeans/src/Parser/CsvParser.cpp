@@ -1,28 +1,67 @@
 #include <string>
+#include <iostream>
 #include <istream>
+#include <sstream>
+#include <vector>
+#include <stdlib.h>
 #include "CsvParser.h"
+#include "../CustomTypes/GenericVector.h"
 
 using namespace std;
-/*
-void CsvParser::readNextRow(std::istream &str)
+
+
+char strToChar(string s)
 {
-    string line;
-    getline(str, line);
-
-    stringstream lineStream(line);
-    string cell;
-
-    m_data.clear();
-    while (getline(lineStream, cell, ','))
+    char returnChar;
+    for(int i = 0; i < s.length(); i++)
     {
-        m_data.push_back(cell);
+        returnChar += s[i];
     }
-
-    // This checks for a trailing comma with no data after it.
-    if (!lineStream && cell.empty())
-    {
-        // If there was a trailing comma then add an empty element.
-        m_data.push_back("");
-    }
+    return returnChar;
 }
-*/
+
+//TODO: Change this to column instead of row
+vector<GenericVector> CsvParser::read(ifstream& fileStr)
+{
+    vector<GenericVector> finalResult;
+    string line;
+
+    while( getline(fileStr, line) )
+    {
+        stringstream linestr (line);
+        string cell;
+        vector<int> valuesForVector;
+
+
+        while(getline(linestr, cell, ','))
+        {
+            int vectorFactor = atoi(cell.c_str());;
+            valuesForVector.push_back(vectorFactor);
+            //cout << "cell = " << cell << endl;
+        }
+        GenericVector newVector (valuesForVector);
+        finalResult.push_back(newVector);
+    }
+
+    /*
+    while(getline(fileStr, line));
+    {
+        cout << "line" << endl;
+        stringstream currentLine(line);
+        string cell;
+
+        vector<int> valsForVector;
+
+        while (getline(currentLine, cell, ','))
+        {
+            cout << "cell" << endl;
+            int vectorFactor = (int) strToChar(cell);
+            valsForVector.push_back(vectorFactor);
+        }
+        GenericVector vectorForThisLine(valsForVector);
+        finalResult.push_back(vectorForThisLine);
+    }
+     */
+    return finalResult;
+}
+

@@ -1,20 +1,18 @@
-#ifndef GENERICVECTOR_H
-#define GENERICVECTOR_H
+#ifndef CSVPARSER_H
+#define CSVPARSER_H
 
+#include <vector>
 #include <string>
 #include <fstream>
 #include <iostream>
+#include "../CustomTypes/GenericVector.h"
 
 using namespace std;
 
 class CsvParser
 {
-    private:
-    // istream& fileStr;
-    // void readNextRow(std::istream &str);
-
-    public: 
-     // int* getResult(istream& file);
+    public:
+     vector<GenericVector> read(ifstream& str);
 };
 
 #endif
