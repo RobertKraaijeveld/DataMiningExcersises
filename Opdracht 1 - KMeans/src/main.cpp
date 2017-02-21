@@ -2,8 +2,26 @@
 #include <fstream>
 #include <sstream>
 #include "Parser/CsvParser.h"
+#include "CustomTypes/Point.h"
+#include "KMeans/KMeans.h"
 
 using namespace std;
+
+
+void setStreamCsvLocation(ifstream& ifs)
+{
+	cout << "Enter the full directory to your wine.csv file: ";
+	string location;
+	getline (cin, location);
+
+	ifs.open(location);
+
+	if(ifs.fail())
+	{
+		cout << "This file does not exist." << endl;
+		setStreamCsvLocation(ifs);
+	}
+}
 
 int main()    
 {
@@ -12,22 +30,20 @@ int main()
 	//1: type * var = new pointer
 	//2: type *var = deref pointer, so get actual value at this pointer 
 	*/
-
-	string line;
+	
 	ifstream ifs;
-	ifs.open("E:\\Hogeschool\\Data Science (Jaar 3)\\Opdracht 1 - KMeans\\docs\\wine.csv");
+	setStreamCsvLocation(ifs);
 
-	//no constructor parentheses necessary for 0 arg constructor
+	// /home/robert/Documents/Projects/dataminingexcersises/Opdracht 1 - KMeans/docs/wine.csv
+
 	CsvParser parser;
-	vector<GenericVector> result = parser.read(ifs);
+	vector<Point> parsedPoints = parser.parseToPoints(ifs);
 
-	for(int i = 0; i < result.size(); i++)
-	{
-		cout << result[i].ToString() << endl;
-	}
+	int amountOfClusters = 15;
+	int amountOfIterations = 5;
 
-
-
+	KMeans kmeans (amountOfClusters, parsedPoints);
+	kmeans.run(amountOfIterations);
 
 	cin.get(); 
 	return 0;

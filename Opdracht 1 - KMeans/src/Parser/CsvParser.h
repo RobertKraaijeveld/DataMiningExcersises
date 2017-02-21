@@ -6,13 +6,14 @@
 #include <fstream>
 #include <iostream>
 #include "../CustomTypes/GenericVector.h"
+#include "../CustomTypes/Point.h"
 
 using namespace std;
 
 class CsvParser
 {
     public:
-     vector<GenericVector> read(ifstream& str);
+     vector<Point> parseToPoints(ifstream& str);
 };
 
 #endif

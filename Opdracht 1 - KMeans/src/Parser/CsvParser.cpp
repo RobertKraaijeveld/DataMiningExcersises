@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include "CsvParser.h"
 #include "../CustomTypes/GenericVector.h"
+#include "../CustomTypes/Point.h"
 
 using namespace std;
 
@@ -20,48 +21,30 @@ char strToChar(string s)
     return returnChar;
 }
 
-//TODO: Change this to column instead of row
-vector<GenericVector> CsvParser::read(ifstream& fileStr)
+vector<Point> CsvParser::parseToPoints(ifstream& fileStr)
 {
-    vector<GenericVector> finalResult;
+    vector<Point> finalResult;
     string line;
+    int rowCounter;
 
     while( getline(fileStr, line) )
     {
+        rowCounter++;
+        vector<int> valuesForVector;
+        
         stringstream linestr (line);
         string cell;
-        vector<int> valuesForVector;
-
 
         while(getline(linestr, cell, ','))
         {
             int vectorFactor = atoi(cell.c_str());;
             valuesForVector.push_back(vectorFactor);
-            //cout << "cell = " << cell << endl;
         }
         GenericVector newVector (valuesForVector);
-        finalResult.push_back(newVector);
+        Point newPoint (rowCounter, newVector);
+
+        finalResult.push_back(newPoint);
     }
-
-    /*
-    while(getline(fileStr, line));
-    {
-        cout << "line" << endl;
-        stringstream currentLine(line);
-        string cell;
-
-        vector<int> valsForVector;
-
-        while (getline(currentLine, cell, ','))
-        {
-            cout << "cell" << endl;
-            int vectorFactor = (int) strToChar(cell);
-            valsForVector.push_back(vectorFactor);
-        }
-        GenericVector vectorForThisLine(valsForVector);
-        finalResult.push_back(vectorForThisLine);
-    }
-     */
-    return finalResult;
+    return finalResult;  
 }
 
