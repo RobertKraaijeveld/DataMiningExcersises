@@ -4,11 +4,11 @@
 #include "GenericVector.h"
 
 struct Centroid {
-    int clusterId; 
+    int id; 
     bool positionChanged;
     GenericVector vector;
     Centroid(int id, GenericVector vector);
-    Centroid(){ clusterId = -1; vector = GenericVector(); };
+    Centroid(){ id = -1; vector = GenericVector(); };
 };
 
 

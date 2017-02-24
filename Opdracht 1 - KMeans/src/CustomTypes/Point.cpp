@@ -8,9 +8,9 @@ Point::Point(int cId, GenericVector gv)
 }
 
 //note to self: Centroid objs dont have to be remade, only their previousGv/currentGvs's
-Centroid::Centroid(int id, GenericVector gv)
+Centroid::Centroid(int i, GenericVector gv)
 {
-    clusterId = id;
+    id = i;
     vector = gv;
 }
 

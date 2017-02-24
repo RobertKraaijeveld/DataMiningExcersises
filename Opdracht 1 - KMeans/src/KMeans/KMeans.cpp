@@ -16,33 +16,77 @@ vector<Centroid> KMeans::createRandomCentroids()
     for(int i = 0; i < clusterAmount; i++)
     {
         GenericVector randomGv = GenericVector::getRandomVector(ROW_COUNT);
+        cout << "randomvector position = " << randomGv.ToString() << endl;
         returnVector.push_back(Centroid(i, randomGv));
     }
     return returnVector;
 }
 
+
 void KMeans::reassignPointClusters()
 {
-    //for every poin
+    for(int i = 0; i < points.size(); i++)
+    {
+        points[i].centroidId = getClosestCentroid(points[i]).id;
+    }
 }
 
 Centroid KMeans::getClosestCentroid(Point p)
 {
-    pair<Centroid, double> closestCentroidAndDistance (Centroid closestCentroid, numeric_limits<double>::max());
+    double MAX_DOUBLE = 1.7976931348623158e+308;
+    Centroid closestCentroid;
+    pair<Centroid, double> closestCentroidAndDistance = make_pair(closestCentroid, MAX_DOUBLE);
 
     for(int i = 0; i < centroids.size(); i++)
     {
         double distance = p.vector.getEuclidDistance(centroids[i].vector); 
-        if(distance < closestCentroidAndDistance.get(1))
+
+        if(distance < closestCentroidAndDistance.second)
         {
-            closestCentroidAndDistance = pair<Centroid, double> (centroids[i], distance);
+            closestCentroidAndDistance = make_pair(centroids[i], distance);                        
         }
     }
-    return closestCentroidAndDistance.get(0);
+    return closestCentroidAndDistance.first;
 }
 
 
+void KMeans::recomputeCentroids()
+{
+    //sum all points within a cluster, divide the resulting vector by the amount of points.
+    //4 loop, not nice
+
+    GenericVector sumResultVector;
+    for(int i = 0; i < centroids.size(); i++)
+    {
+        vector<Point> pointsForThisCluster = getPointsOfCluster(centroids[i].id);
+        for(int j = 0; j < pointsForThisCluster.size(); j++)
+        {
+            GenericVector& vectorForPoint = pointsForThisCluster[j].vector;
+            sumResultVector = sumResultVector.sumWith(vectorForPoint);            
+        }     
+        centroids[i].vector = sumResultVector.divide(pointsForThisCluster.size());
+        cout << "centroid with id " << centroids[i].id << " is now at vector " << centroids[i].vector.ToString() << endl; 
+    }
+}
+
+//inefficient unfortunately
+vector<Point> KMeans::getPointsOfCluster(int centroidId)
+{
+    vector<Point> pointsForCluster;
+    for(int i = 0; i < points.size(); i++)
+    {
+       if(points[i].centroidId == centroidId)
+       {
+           pointsForCluster.push_back(points[i]);
+       }
+    }
+    return pointsForCluster;
+}
+
+
+
 //use changedBool instead of previous/next
+//set iterationAmount by user
 void KMeans::run(int iterationAmount)
 {
     centroids = createRandomCentroids(); 
@@ -52,12 +96,13 @@ void KMeans::run(int iterationAmount)
     //use SSE later, for now just use K
     while(iterations < iterationAmount)
     {
-        //reassignPointClusters();
-        //recomputeCentroids();
-        std::cout << "ran" << "\n";
+        reassignPointClusters();
+        recomputeCentroids();
+        //save result and SSE
         iterations++;
     }
-    //PrintResult(); 
+    //pick result with best SSE
+    //PrintResult(bestResult); 
 }
 
 

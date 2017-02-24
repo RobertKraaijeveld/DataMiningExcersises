@@ -9,19 +9,19 @@ class KMeans {
         int clusterAmount;
         vector<Point> &points;
         vector<Centroid> centroids;
-        GenericVector getClusterMean(vector<Point> cluster);
-
+        
         vector<Centroid> createRandomCentroids();
         bool continueIteration();
-        
         void reassignPointClusters();
         Centroid getClosestCentroid(Point p);
 
+        vector<Point> getPointsOfCluster(int centroidId);
         void recomputeCentroids();
+        
         void printResult();
 
     public:
-        KMeans(int c, vector<Point> p) : points(p) { clusterAmount = c; };
+        KMeans(int c, vector<Point>& p) : points(p) { clusterAmount = c; };
         void run(int iterationAmount);
                 
 };

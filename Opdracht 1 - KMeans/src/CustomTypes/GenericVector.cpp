@@ -3,40 +3,61 @@
 #include <random>
 #include <vector>
 #include <string>
+#include <iostream>
 #include <sstream>
 
 using namespace std;
 
-GenericVector::GenericVector(vector<int> v)
+GenericVector::GenericVector(vector<double> v)
 {
     values = v;
 }
 
-double GenericVector::getEuclidDistance(GenericVector other)
+double GenericVector::getEuclidDistance(GenericVector& other)
 {
     if (!this->VectorSizesEqual(other))
-        return -1.0;
+    {
+        //TODO MAKE THIS doubleO EXCEPTION
+        return -1.0;        
+    }
 
     double sumOfSquaredSubtractions;
-    for (vector<int>::size_type i = 0; i != values.size(); i++)
+    for (int i = 0; i < values.size(); i++)
     {
         sumOfSquaredSubtractions = sumOfSquaredSubtractions + pow(values[i] - other.values[i], 2);
     }
     return sqrt(sumOfSquaredSubtractions);
 }
 
-GenericVector GenericVector::sum(GenericVector other)
+GenericVector GenericVector::sumWith(GenericVector &other)
 {
     if (!this->VectorSizesEqual(other))
-        return GenericVector(vector<int>(1,-1));
+        return GenericVector(vector<double>(1,-1.0));
 
-    vector<int> summedValues;
+    vector<double> summedValues;
     for(int i = 0; i < values.size(); i++)
     {
-        summedValues[i] = (values[i] + other.values[i]);
+        summedValues.push_back(values[i] + other.values[i]);
     }
     return GenericVector(summedValues);
 }
+
+
+GenericVector GenericVector::divide(int divisor)
+{
+    cout << "divisor = " << divisor << endl;
+    for (int i = 0; i < values.size(); i++)
+    {
+        if(divisor == 0)
+            divisor = 1;
+
+        double original = values[i];
+        values[i] = values[i] / divisor;
+        cout << "values[i] = " << original << " divided by " << divisor << " which is " << values[i]; 
+    }
+    return * this;
+ }
+
 
 GenericVector GenericVector::getRandomVector(int dimensionLength)
 {
@@ -48,7 +69,7 @@ GenericVector GenericVector::getRandomVector(int dimensionLength)
     //distributor in range
     uniform_int_distribution<> distributor(0, 1);
  
-    vector<int> values;
+    vector<double> values;
     for (int i = 0; i < dimensionLength; i++)
     {
         values.push_back(distributor(gen));
@@ -57,7 +78,7 @@ GenericVector GenericVector::getRandomVector(int dimensionLength)
 }
 
 
-bool GenericVector::VectorSizesEqual(GenericVector other)
+bool GenericVector::VectorSizesEqual(GenericVector &other)
 {
     return other.values.size() == values.size();
 }
@@ -71,16 +92,16 @@ string GenericVector::ToString()
         stringstream stream;
         stream << (values[i]);
         string strResult = stream.str();
-        const char *consChar = strResult.c_str();
 
         if (i == (values.size() - 1))
         {
-            returnStr = returnStr + *consChar + ")";
+            returnStr = returnStr + strResult + ")";
         }
         else
         {
-            returnStr = returnStr + *consChar + ",";
+            returnStr = returnStr + strResult + ",";
         }
     }
     return returnStr;
 }
+

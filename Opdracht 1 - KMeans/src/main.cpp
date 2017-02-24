@@ -23,6 +23,21 @@ void setStreamCsvLocation(ifstream& ifs)
 	}
 }
 
+/*
+pair<int, int> getIterationAndClusterAmount(ifstream& ifs)
+{
+	cout << "Enter the full directory to your wine.csv file: ";
+	string location;
+	getline (cin, location);
+	
+		if(ifs.fail())
+	{
+		cout << "This file does not exist." << endl;
+		setStreamCsvLocation(ifs);
+	}
+}
+*/
+
 int main()    
 {
 	/*
@@ -39,8 +54,8 @@ int main()
 	CsvParser parser;
 	vector<Point> parsedPoints = parser.parseToPoints(ifs);
 
-	int amountOfClusters = 15;
-	int amountOfIterations = 5;
+	int amountOfClusters = 5;
+	int amountOfIterations = 1;
 
 	KMeans kmeans (amountOfClusters, parsedPoints);
 	kmeans.run(amountOfIterations);

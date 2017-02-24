@@ -30,14 +30,14 @@ vector<Point> CsvParser::parseToPoints(ifstream& fileStr)
     while( getline(fileStr, line) )
     {
         rowCounter++;
-        vector<int> valuesForVector;
+        vector<double> valuesForVector;
         
         stringstream linestr (line);
         string cell;
 
         while(getline(linestr, cell, ','))
         {
-            int vectorFactor = atoi(cell.c_str());;
+            double vectorFactor = (double) atoi(cell.c_str());;
             valuesForVector.push_back(vectorFactor);
         }
         GenericVector newVector (valuesForVector);
