@@ -5,10 +5,10 @@
 
 struct Centroid {
     int id; 
-    bool positionChanged;
     GenericVector vector;
     Centroid(int id, GenericVector vector);
     Centroid(){ id = -1; vector = GenericVector(); };
+    int getOfferCount(int offerId);
 };
 
 
@@ -17,6 +17,7 @@ class Point {
         Point(int cId, GenericVector vector);
         int centroidId;
         GenericVector vector;
+        double distanceToCentroid;
 };
 
 #endif

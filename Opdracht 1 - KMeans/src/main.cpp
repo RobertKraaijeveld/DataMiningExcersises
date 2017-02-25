@@ -3,7 +3,7 @@
 #include <sstream>
 #include "Parser/CsvParser.h"
 #include "CustomTypes/Point.h"
-#include "KMeans/KMeans.h"
+#include "KMeans/KMeansController.h"
 
 using namespace std;
 
@@ -40,12 +40,6 @@ pair<int, int> getIterationAndClusterAmount(ifstream& ifs)
 
 int main()    
 {
-	/*
-	//0: var& = adress of non-pointer
-	//1: type * var = new pointer
-	//2: type *var = deref pointer, so get actual value at this pointer 
-	*/
-	
 	ifstream ifs;
 	setStreamCsvLocation(ifs);
 
@@ -55,10 +49,10 @@ int main()
 	vector<Point> parsedPoints = parser.parseToPoints(ifs);
 
 	int amountOfClusters = 5;
-	int amountOfIterations = 1;
+	int amountOfIterations = 4;
 
-	KMeans kmeans (amountOfClusters, parsedPoints);
-	kmeans.run(amountOfIterations);
+	KMeansController kmeansController(parsedPoints, amountOfIterations, amountOfClusters);
+	kmeansController.run();
 
 	cin.get(); 
 	return 0;

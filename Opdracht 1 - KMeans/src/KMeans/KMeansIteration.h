@@ -1,29 +1,31 @@
-#ifndef KMEANS_H
-#define KMEANS_H
+#ifndef KMEANSITERATION_H
+#define KMEANSITERATION_H
 
 #include "../CustomTypes/Point.h"
 #include "../CustomTypes/GenericVector.h"
 
-class KMeans {
+class KMeansIteration {
     private:
         int clusterAmount;
+
         vector<Point> &points;
         vector<Centroid> centroids;
         
         vector<Centroid> createRandomCentroids();
-        bool continueIteration();
         void reassignPointClusters();
-        Centroid getClosestCentroid(Point p);
+        pair<Centroid, double> getClosestCentroidAndDistance(Point p);
 
         vector<Point> getPointsOfCluster(int centroidId);
         void recomputeCentroids();
-        
-        void printResult();
+
+        double computeSSE();
 
     public:
-        KMeans(int c, vector<Point>& p) : points(p) { clusterAmount = c; };
-        void run(int iterationAmount);
-                
+        int iterationId;
+        double sumOfSquaredErrors;
+        
+        KMeansIteration(vector<Point>& p, int& c, int& i) : points(p), clusterAmount(c),  iterationId(i) {};
+        void runIteration();
 };
 
 

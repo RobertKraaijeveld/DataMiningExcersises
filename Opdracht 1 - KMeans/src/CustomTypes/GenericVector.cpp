@@ -17,7 +17,7 @@ double GenericVector::getEuclidDistance(GenericVector& other)
 {
     if (!this->VectorSizesEqual(other))
     {
-        //TODO MAKE THIS doubleO EXCEPTION
+        //TODO MAKE THIS AN EXCEPTION
         return -1.0;        
     }
 
@@ -45,15 +45,13 @@ GenericVector GenericVector::sumWith(GenericVector &other)
 
 GenericVector GenericVector::divide(int divisor)
 {
-    cout << "divisor = " << divisor << endl;
     for (int i = 0; i < values.size(); i++)
     {
+        //avoiding division by 0 errors on not-chosen clusters
         if(divisor == 0)
             divisor = 1;
 
-        double original = values[i];
         values[i] = values[i] / divisor;
-        cout << "values[i] = " << original << " divided by " << divisor << " which is " << values[i]; 
     }
     return * this;
  }
@@ -66,7 +64,7 @@ GenericVector GenericVector::getRandomVector(int dimensionLength)
     //Mersenne Twister pseudo-random number generator
     mt19937 gen(rd());
  
-    //distributor in range
+    //distributor in range TODO: GENERIFY THIS
     uniform_int_distribution<> distributor(0, 1);
  
     vector<double> values;

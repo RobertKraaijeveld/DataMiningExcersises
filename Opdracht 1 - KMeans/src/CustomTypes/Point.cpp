@@ -14,4 +14,10 @@ Centroid::Centroid(int i, GenericVector gv)
     vector = gv;
 }
 
+int Centroid::getOfferCount(int offerId)
+{
+    for()
+}
+
+
 

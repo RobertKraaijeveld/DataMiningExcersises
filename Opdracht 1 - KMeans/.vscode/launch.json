@@ -6,7 +6,7 @@
             "name": "C++ Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceRoot}/build/opdracht1",
+            "program": "${workspaceRoot}/build/excersise1",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceRoot}",
