@@ -4,6 +4,8 @@
 #include <iostream>
 #include <limits>
 #include <math.h>
+#include <map>
+
 
 
 using namespace std;
@@ -27,23 +29,23 @@ void KMeansIteration::reassignPointClusters()
 {
     for(int i = 0; i < points.size(); i++)
     {
-        pair<Centroid, double> closestCentroidAndDistance = getClosestCentroidAndDistance(points[i]);  
+        pair<Centroid, float> closestCentroidAndDistance = getClosestCentroidAndDistance(points[i]);  
         points[i].centroidId = closestCentroidAndDistance.first.id;
         points[i].distanceToCentroid = closestCentroidAndDistance.second;
     }
 }
 
 //ERROR: Not all centroids are checked
-pair<Centroid, double> KMeansIteration::getClosestCentroidAndDistance(Point p)
+pair<Centroid, float> KMeansIteration::getClosestCentroidAndDistance(Point p)
 {
     //duplicated in kmeanscontroller
-    double MAX_DOUBLE = 1.7976931348623158e+308;
+    float MAX_float = 1.7976931348623158e+308;
     Centroid closestCentroid;
-    pair<Centroid, double> closestCentroidAndDistance = make_pair(closestCentroid, MAX_DOUBLE);
+    pair<Centroid, float> closestCentroidAndDistance = make_pair(closestCentroid, MAX_float);
 
     for(int i = 0; i < centroids.size(); i++)
     {
-        double distance = p.vector.getEuclidDistance(centroids[i].vector); 
+        float distance = p.vector.getEuclidDistance(centroids[i].vector); 
 
         if(distance < closestCentroidAndDistance.second)
         {
@@ -61,7 +63,7 @@ void KMeansIteration::recomputeCentroids()
     GenericVector sumResultVector;
     for(int i = 0; i < centroids.size(); i++)
     {
-        vector<Point> pointsForThisCluster = getPointsOfCluster(centroids[i].id);
+        vector<Point> pointsForThisCluster = KMeansIteration::getPointsOfCluster(centroids[i].id);
         for(int j = 0; j < pointsForThisCluster.size(); j++)
         {
             GenericVector& vectorForPoint = pointsForThisCluster[j].vector;
@@ -84,10 +86,69 @@ vector<Point> KMeansIteration::getPointsOfCluster(int centroidId)
     return pointsForCluster;
 }
 
+/*
+REPORTING RESULTS
+*/
 
-double KMeansIteration::computeSSE()
+map<int, int> KMeansIteration::getCentroidOfferCounts(Centroid& centroid)
 {
-    double SSE;
+    vector<Point> pointsForCluster = getPointsOfCluster(centroid.id);
+
+    map<int, int> offerCountsForCentroid;
+
+    for (int j = 0; j < pointsForCluster.size(); j++)
+    {
+        for(int i = 0; i < pointsForCluster[j].vector.values.size(); i++)
+        {
+            if(pointsForCluster[j].vector.values[i] == 1.0)
+            {
+                offerCountsForCentroid[i] = offerCountsForCentroid[i] + 1;
+            }
+        }
+    }
+    return offerCountsForCentroid;
+}
+
+void KMeansIteration::printCentroidOffersAboveThreshold(int threshold, Centroid& centroid)
+{
+    map<int,int> offersCounts = getCentroidOfferCounts(centroid);
+    int offersAboveThresholdCount = 0;
+
+    cout << "ITERATION " << iterationId << " - CENTROID NO. " << centroid.id << endl;
+    cout << "---------------------------------------------------" << endl;
+    cout << "Total amount of offers bought: " << offersCounts.size() << endl;
+    cout << "---------------------------------------------------" << endl;
+    
+
+    //sort this
+    for (int k = 0; k < offersCounts.size(); k++)
+    {
+        if(offersCounts.count(k) && offersCounts[k] > threshold)
+        {
+            offersAboveThresholdCount++;
+            cout << "Offer " << k << " was bought " << offersCounts[k] << " times" << endl;            
+        }
+    }
+
+    if(offersAboveThresholdCount == 0 && offersCounts.size() > 0)
+    {
+        cout << "No offers in this cluster were bought more than " << threshold << " times." << endl;
+    }
+    cout << "" << endl;
+    cout << "" << endl;
+}
+
+void KMeansIteration::print(int offerThreshold)
+{
+    for(int i = 0; i < centroids.size(); i++)
+    {
+        printCentroidOffersAboveThreshold(offerThreshold, centroids[i]);
+    }
+}
+
+float KMeansIteration::computeSSE()
+{
+    float SSE;
     for(int i = 0; i < points.size(); i++)
     {
         SSE = SSE + pow(points[i].distanceToCentroid, 2);

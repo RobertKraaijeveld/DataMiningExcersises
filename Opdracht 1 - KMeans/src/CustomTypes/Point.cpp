@@ -1,5 +1,11 @@
 #include "Point.h"
 #include "GenericVector.h"
+#include "../KMeans/KMeansIteration.h"
+#include <map>
+#include <iostream>
+#include <vector>
+
+using namespace std;
 
 Point::Point(int cId, GenericVector gv)
 {
@@ -12,12 +18,6 @@ Centroid::Centroid(int i, GenericVector gv)
 {
     id = i;
     vector = gv;
-}
-
-int Centroid::getOfferCount(int offerId)
-{
-    for()
-}
-
+} 
 
 

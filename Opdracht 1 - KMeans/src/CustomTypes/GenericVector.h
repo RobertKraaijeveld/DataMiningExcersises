@@ -10,13 +10,13 @@ using namespace std;
 class GenericVector
 { 
    public:
-    vector<double> values;   
+    vector<float> values;   
 
     //bad robert, using hardcoded column values like that
-    GenericVector(){ values = vector<double>(32, 0.0);  };
-    GenericVector(vector<double> v);
+    GenericVector(){ values = vector<float>(32, 0.0);  };
+    GenericVector(vector<float> v);
 
-    double getEuclidDistance(GenericVector& gv);
+    float getEuclidDistance(GenericVector& gv);
     GenericVector sumWith(GenericVector& gv);
     GenericVector divide(int divisor);
 

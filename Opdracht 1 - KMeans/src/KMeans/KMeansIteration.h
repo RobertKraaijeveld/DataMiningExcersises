@@ -9,23 +9,28 @@ class KMeansIteration {
         int clusterAmount;
 
         vector<Point> &points;
-        vector<Centroid> centroids;
-        
+        vector<Centroid> centroids;        
+                
         vector<Centroid> createRandomCentroids();
         void reassignPointClusters();
-        pair<Centroid, double> getClosestCentroidAndDistance(Point p);
+        pair<Centroid, float> getClosestCentroidAndDistance(Point p);
 
         vector<Point> getPointsOfCluster(int centroidId);
         void recomputeCentroids();
 
-        double computeSSE();
+        float computeSSE();
+        map<int, int>getCentroidOfferCounts(Centroid& centroid);
+        void printCentroidOffersAboveThreshold(int threshold, Centroid& centroid);
+
+
 
     public:
         int iterationId;
-        double sumOfSquaredErrors;
-        
+        float sumOfSquaredErrors;
+
         KMeansIteration(vector<Point>& p, int& c, int& i) : points(p), clusterAmount(c),  iterationId(i) {};
         void runIteration();
+        void print(int offerThreshold);
 };
 
 

@@ -2,13 +2,14 @@
 #define POINT_H
 
 #include "GenericVector.h"
+#include <map>
 
 struct Centroid {
     int id; 
     GenericVector vector;
+
     Centroid(int id, GenericVector vector);
     Centroid(){ id = -1; vector = GenericVector(); };
-    int getOfferCount(int offerId);
 };
 
 

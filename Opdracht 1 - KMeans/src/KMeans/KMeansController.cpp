@@ -12,7 +12,7 @@ KMeansIteration KMeansController::getIterationWithBestSSE()
     //also, make this a null or something instead of the first
     //duplicated in kmeanscontroller
 
-    pair<int&, double> bestIterationIdAndSSE (iterations[0].iterationId, iterations[0].sumOfSquaredErrors);
+    pair<int&, float> bestIterationIdAndSSE (iterations[0].iterationId, iterations[0].sumOfSquaredErrors);
 
     //maybe tell iteration to calc sse here?
     for (int i = 0; i < iterations.size(); i++)
@@ -28,38 +28,21 @@ KMeansIteration KMeansController::getIterationWithBestSSE()
     {
         if(iterations[j].iterationId == bestIterationIdAndSSE.first)
         {
-            cout << "best iteration has id " << bestIterationIdAndSSE.first << " and SSE " << bestIterationIdAndSSE.second << endl; 
+            cout << "" << endl;            
+            cout << "============================" << endl;
+            cout << "BEST ITERATION has id " << bestIterationIdAndSSE.first << " and SSE " << bestIterationIdAndSSE.second << endl; 
+            cout << "============================" << endl;
+            cout << "" << endl;
+            
             return iterations[j];            
         }
     }
 }
 
-void KMeansController::printResult(KMeansIteration& iteration)
-{
-    for(int i = 0; i < centroids.size(); i++)
-    {
-        vector<Point> pointsForCluster = getPointsOfCluster(centroids[i].id);
-
-        for (int j = 0; j < pointsForCluster.size(); j++)
-        {
-            
-        }
-    }
-
-    /*
-    for each cluster, you have to consider which clients belong to it
-    and count how many times each of the 32 offers was bought by that group of clients. Then, you have to sort
-    the offers in order to show only the “most bought” ones in each cluster. Display only the offers which were
-    bought more than 3 times.
-    */
-}
-
-
 
 //TODO: set iterationAmount by user
 void KMeansController::run()
 {
-    cout << "RUNNING" << endl;
     int iterationsCount = 0;
 
     while(iterationsCount < iterationAmount)
@@ -72,7 +55,8 @@ void KMeansController::run()
         iterationsCount++;
     }
     KMeansIteration bestIteration = getIterationWithBestSSE();
-    //printResult(bestIteration);
+    bestIteration.print(3.0);
+    cout << "DONE" << endl;
 }
 
 /*

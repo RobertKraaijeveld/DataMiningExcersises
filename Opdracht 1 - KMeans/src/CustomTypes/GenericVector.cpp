@@ -8,12 +8,12 @@
 
 using namespace std;
 
-GenericVector::GenericVector(vector<double> v)
+GenericVector::GenericVector(vector<float> v)
 {
     values = v;
 }
 
-double GenericVector::getEuclidDistance(GenericVector& other)
+float GenericVector::getEuclidDistance(GenericVector& other)
 {
     if (!this->VectorSizesEqual(other))
     {
@@ -21,7 +21,7 @@ double GenericVector::getEuclidDistance(GenericVector& other)
         return -1.0;        
     }
 
-    double sumOfSquaredSubtractions;
+    float sumOfSquaredSubtractions;
     for (int i = 0; i < values.size(); i++)
     {
         sumOfSquaredSubtractions = sumOfSquaredSubtractions + pow(values[i] - other.values[i], 2);
@@ -32,9 +32,9 @@ double GenericVector::getEuclidDistance(GenericVector& other)
 GenericVector GenericVector::sumWith(GenericVector &other)
 {
     if (!this->VectorSizesEqual(other))
-        return GenericVector(vector<double>(1,-1.0));
+        return GenericVector(vector<float>(1,-1.0));
 
-    vector<double> summedValues;
+    vector<float> summedValues;
     for(int i = 0; i < values.size(); i++)
     {
         summedValues.push_back(values[i] + other.values[i]);
@@ -67,7 +67,7 @@ GenericVector GenericVector::getRandomVector(int dimensionLength)
     //distributor in range TODO: GENERIFY THIS
     uniform_int_distribution<> distributor(0, 1);
  
-    vector<double> values;
+    vector<float> values;
     for (int i = 0; i < dimensionLength; i++)
     {
         values.push_back(distributor(gen));
