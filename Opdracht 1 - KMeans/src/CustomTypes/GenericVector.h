@@ -17,10 +17,11 @@ class GenericVector
     GenericVector(vector<float> v);
 
     float getEuclidDistance(GenericVector& gv);
-    GenericVector sumWith(GenericVector& gv);
+    void sumWith(GenericVector& gv2);
     GenericVector divide(int divisor);
 
     static GenericVector getRandomVector(int dimensionLength);
+    bool isNotEqual(GenericVector& gv);
     bool VectorSizesEqual(GenericVector& gv);
     string ToString();
 };

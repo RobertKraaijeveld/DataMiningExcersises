@@ -6,10 +6,18 @@
 #include <math.h>
 #include <map>
 
-
-
 using namespace std;
 
+//shitty param, get rid of it
+bool KMeansIteration::centroidsHaveChanged()
+{
+    for(int i = 0; i < clusterAmount; i++)
+    {
+        if(centroids[i].hasChanged)
+            return true;   
+    }    
+    return false;
+}
 
 vector<Centroid> KMeansIteration::createRandomCentroids()
 {
@@ -35,7 +43,6 @@ void KMeansIteration::reassignPointClusters()
     }
 }
 
-//ERROR: Not all centroids are checked
 pair<Centroid, float> KMeansIteration::getClosestCentroidAndDistance(Point p)
 {
     //duplicated in kmeanscontroller
@@ -48,9 +55,8 @@ pair<Centroid, float> KMeansIteration::getClosestCentroidAndDistance(Point p)
         float distance = p.vector.getEuclidDistance(centroids[i].vector); 
 
         if(distance < closestCentroidAndDistance.second)
-        {
             closestCentroidAndDistance = make_pair(centroids[i], distance);                        
-        }
+            
     }
     return closestCentroidAndDistance;
 }
@@ -59,17 +65,19 @@ pair<Centroid, float> KMeansIteration::getClosestCentroidAndDistance(Point p)
 void KMeansIteration::recomputeCentroids()
 {
     //sum all points within a cluster, divide the resulting vector by the amount of points.
-    
-    GenericVector sumResultVector;
     for(int i = 0; i < centroids.size(); i++)
     {
+        GenericVector oldVector = centroids[i].vector;
         vector<Point> pointsForThisCluster = KMeansIteration::getPointsOfCluster(centroids[i].id);
+
         for(int j = 0; j < pointsForThisCluster.size(); j++)
         {
             GenericVector& vectorForPoint = pointsForThisCluster[j].vector;
-            sumResultVector = sumResultVector.sumWith(vectorForPoint);            
-        }     
-        centroids[i].vector = sumResultVector.divide(pointsForThisCluster.size());
+            centroids[i].vector.sumWith(vectorForPoint);            
+        }
+        centroids[i].vector.divide(pointsForThisCluster.size());      
+
+        recordVectorChange(oldVector, centroids[i]);
     }
 }
 
@@ -85,6 +93,13 @@ vector<Point> KMeansIteration::getPointsOfCluster(int centroidId)
     }
     return pointsForCluster;
 }
+
+void KMeansIteration::recordVectorChange(GenericVector& oldCentroidVector, Centroid& centroid)
+{
+    centroid.hasChanged = oldCentroidVector.isNotEqual(centroid.vector);
+}  
+
+
 
 /*
 REPORTING RESULTS
@@ -148,19 +163,34 @@ void KMeansIteration::print(int offerThreshold)
 
 float KMeansIteration::computeSSE()
 {
-    float SSE;
+    float SSE = 0;
     for(int i = 0; i < points.size(); i++)
     {
-        SSE = SSE + pow(points[i].distanceToCentroid, 2);
+        SSE += powf(points[i].distanceToCentroid, 2.0);
     }
     return SSE;
 }
 
+
 void KMeansIteration::runIteration()
 {
     centroids = createRandomCentroids(); 
-    reassignPointClusters();    
-    recomputeCentroids();
+    
+    int count = 0;
+    while(count < 25)
+    {
+        reassignPointClusters();    
+        recomputeCentroids();
+        count++;
 
+        if(centroidsHaveChanged() == false)
+            break;
+    }
     sumOfSquaredErrors = computeSSE();
+    cout << "SSE is " << sumOfSquaredErrors << endl;
 }
+
+/*
+check the distance between the original centroid vector and its new one. Should get smaller and smaller
+as it homes in.
+*/

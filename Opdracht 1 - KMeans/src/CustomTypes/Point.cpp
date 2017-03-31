@@ -13,7 +13,6 @@ Point::Point(int cId, GenericVector gv)
     vector = gv;
 }
 
-//note to self: Centroid objs dont have to be remade, only their previousGv/currentGvs's
 Centroid::Centroid(int i, GenericVector gv)
 {
     id = i;

@@ -6,6 +6,7 @@
 
 struct Centroid {
     int id; 
+    bool hasChanged = true;
     GenericVector vector;
 
     Centroid(int id, GenericVector vector);

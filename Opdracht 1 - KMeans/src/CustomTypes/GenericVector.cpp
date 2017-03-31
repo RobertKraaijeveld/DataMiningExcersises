@@ -21,25 +21,20 @@ float GenericVector::getEuclidDistance(GenericVector& other)
         return -1.0;        
     }
 
-    float sumOfSquaredSubtractions;
+    float sumOfSquaredSubtractions = 0;
     for (int i = 0; i < values.size(); i++)
     {
-        sumOfSquaredSubtractions = sumOfSquaredSubtractions + pow(values[i] - other.values[i], 2);
+        sumOfSquaredSubtractions += pow(values[i] - other.values[i], 2.0);
     }
     return sqrt(sumOfSquaredSubtractions);
 }
 
-GenericVector GenericVector::sumWith(GenericVector &other)
+void GenericVector::sumWith(GenericVector& gv2)
 {
-    if (!this->VectorSizesEqual(other))
-        return GenericVector(vector<float>(1,-1.0));
-
-    vector<float> summedValues;
     for(int i = 0; i < values.size(); i++)
     {
-        summedValues.push_back(values[i] + other.values[i]);
+        values[i] += gv2.values[i];
     }
-    return GenericVector(summedValues);
 }
 
 
@@ -75,6 +70,15 @@ GenericVector GenericVector::getRandomVector(int dimensionLength)
     return GenericVector(values);
 }
 
+bool GenericVector::isNotEqual(GenericVector& gv)
+{
+    for(int i = 0; i < values.size(); i++)
+    {
+        if(values[i] != gv.values[i])
+            return true;            
+    }
+    return false;
+}
 
 bool GenericVector::VectorSizesEqual(GenericVector &other)
 {

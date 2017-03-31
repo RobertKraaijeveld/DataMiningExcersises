@@ -8,21 +8,6 @@
 using namespace std;
 
 
-void setStreamCsvLocation(ifstream& ifs)
-{
-	cout << "Enter the full directory to your wine.csv file: ";
-	string location;
-	getline (cin, location);
-
-	ifs.open(location);
-
-	if(ifs.fail())
-	{
-		cout << "This file does not exist." << endl;
-		setStreamCsvLocation(ifs);
-	}
-}
-
 pair<int, int> getIterationAndClusterAmount()
 {
 	cout << "Enter the amount of clusters you wish to use: " << endl;
@@ -37,6 +22,7 @@ pair<int, int> getIterationAndClusterAmount()
 	
 	int iterationAmount = stoi(iterationAmountStr);
 
+	//make iterationAmountStr is "" check
 	if(clusterAmount > 0 && iterationAmount > 0)
 	{
 		return make_pair(iterationAmount, clusterAmount);
@@ -65,9 +51,7 @@ int AskForRetry()
 void executeKMeansRoutine()
 {
 	ifstream ifs;
-	setStreamCsvLocation(ifs);
-
-	// /home/robert/Documents/Projects/dataminingexcersises/Opdracht 1 - KMeans/docs/wine.csv
+	ifs.open("/home/robert/Documents/Projects/dataminingexcersises/Opdracht 1 - KMeans/docs/wine.csv");
 
 	CsvParser parser;
 	vector<Point> parsedPoints = parser.parseToPoints(ifs);
