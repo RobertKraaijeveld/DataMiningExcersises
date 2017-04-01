@@ -1,0 +1,8 @@
+/home/robert/Documents/Projects/DataMiningExcersises/Excersise 2 - Genetic Algorithm/bin/Debug/netcoreapp1.1/Excersise 2 - Genetic Algorithm.deps.json
+/home/robert/Documents/Projects/DataMiningExcersises/Excersise 2 - Genetic Algorithm/bin/Debug/netcoreapp1.1/Excersise 2 - Genetic Algorithm.runtimeconfig.json
+/home/robert/Documents/Projects/DataMiningExcersises/Excersise 2 - Genetic Algorithm/bin/Debug/netcoreapp1.1/Excersise 2 - Genetic Algorithm.runtimeconfig.dev.json
+/home/robert/Documents/Projects/DataMiningExcersises/Excersise 2 - Genetic Algorithm/bin/Debug/netcoreapp1.1/Excersise 2 - Genetic Algorithm.dll
+/home/robert/Documents/Projects/DataMiningExcersises/Excersise 2 - Genetic Algorithm/bin/Debug/netcoreapp1.1/Excersise 2 - Genetic Algorithm.pdb
+/home/robert/Documents/Projects/DataMiningExcersises/Excersise 2 - Genetic Algorithm/obj/Debug/netcoreapp1.1/Excersise 2 - Genetic Algorithm.AssemblyInfo.cs
+/home/robert/Documents/Projects/DataMiningExcersises/Excersise 2 - Genetic Algorithm/obj/Debug/netcoreapp1.1/Excersise 2 - Genetic Algorithm.dll
+/home/robert/Documents/Projects/DataMiningExcersises/Excersise 2 - Genetic Algorithm/obj/Debug/netcoreapp1.1/Excersise 2 - Genetic Algorithm.pdb
