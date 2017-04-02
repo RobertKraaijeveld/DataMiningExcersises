@@ -29,13 +29,13 @@ namespace Excersise_2___Genetic_Algorithm
             */
 
             var crossoverRate = 0.85;
-            var mutationRate = 0;
+            var mutationRate = 0.2;
             var elitism = true;
-            var populationSize = 5;
+            var populationSize = 15;
             var numIterations = 100;
 
             GeneticAlgorithm<BinaryVal> fakeProblemGA = new GeneticAlgorithm<BinaryVal>(crossoverRate, mutationRate, elitism, populationSize, numIterations);
-            var solution = fakeProblemGA.Run(createIndividual, computeFitness, selectTwoParents, null, null); 
+            var solution = fakeProblemGA.Run(createIndividual, computeFitness, selectTwoParents, crossover, null); 
         }
 
         private static BinaryVal createIndividual()
@@ -55,6 +55,10 @@ Func<Ind> createIndividual, Func<Ind, double> computeFitness, Func<Ind[], double
         }
 
 
+        /*
+            ROULETTE WHEEL SELECTION
+         */
+
         private static Func<Tuple<BinaryVal, BinaryVal>> selectTwoParents (BinaryVal[] population, double[] fitnesses)
         {
             var chosenParents = new List<BinaryVal>();
@@ -66,7 +70,6 @@ Func<Ind> createIndividual, Func<Ind, double> computeFitness, Func<Ind[], double
                 var highestWheelSectionValue =  wheelSections.Last().Item2;
                 var randomPercentage = random.getRandomDoubleWithMinMax(0.0, highestWheelSectionValue); 
 
-                //TODO: Maybe make wheelsection a class or struct 
                 for (int i = 0; i < wheelSections.Count; i++)
                 {
                     if(randomPercentage >= wheelSections[i].Item1 && randomPercentage <= wheelSections[i].Item2
@@ -85,36 +88,55 @@ Func<Ind> createIndividual, Func<Ind, double> computeFitness, Func<Ind[], double
 
         private static List<Tuple<double, double>> getRouletteWheelSections(BinaryVal[] population, double[] fitnesses)
         {
+            var wheelSections = new List<Tuple<double, double>>();
+
             var totalFitness = (int) fitnesses.Sum();
             var fitnessesAsPercentages = Utilities.calculatePercentagesList(fitnesses, totalFitness);
 
-            var percentageSections = new List<Tuple<double, double>>();
             for(var i = 0; i < population.Length; i++)
             {
-                var currentFitnessPercentage = Math.Abs(fitnessesAsPercentages[i]);
+                var currentFitnessPercentage = fitnessesAsPercentages[i];
 
-                //problems are caused by negative fitnesses. 
-                if(i != 0)
+                if(i > 0)
                 {
-                    var previousSectionEnd = percentageSections[i-1].Item2;
+                    var previousSectionEnd = wheelSections[i-1].Item2;
                     var x = previousSectionEnd + currentFitnessPercentage;
+
                     Console.WriteLine("Adding new percentage section of " + previousSectionEnd + " to " + x + 
                     " since " + previousSectionEnd + " plus " + currentFitnessPercentage + " equals to " + x);
-                    percentageSections.Add(new Tuple<double, double>(previousSectionEnd, x));                                       
+                    wheelSections.Add(new Tuple<double, double>(previousSectionEnd, x));                                       
                 }
                 else
                 {
                     Console.WriteLine("Adding new percentage section of " + 0 + " to " + currentFitnessPercentage);                    
-                    percentageSections.Add(new Tuple<double, double>(0.0, currentFitnessPercentage));
+                    wheelSections.Add(new Tuple<double, double>(0.0, currentFitnessPercentage));
                 }
             }
-            return percentageSections;
+            return wheelSections;
         }
-/*        
-        private static Tuple<BinaryVal, BinaryVal> crossover (Func<Tuple<BinaryVal, BinaryVal>> parents)
-        {}
-        
+
         private static Tuple<BinaryVal, BinaryVal> crossover (Tuple<BinaryVal, BinaryVal> parents)
-   */      
+        {
+            var crossoverIndex = Utilities.getExistingRandomIndex(parents.Item1.bits, parents.Item2.bits);
+            Console.WriteLine("Crossover index = " + crossoverIndex);
+
+            var firstChild = new BinaryVal(new int[5]);
+            var secondChild = new BinaryVal(new int[5]);            
+
+            var fatherSplit = Utilities.splitArrayOnIndex(parents.Item1.bits, crossoverIndex);
+            var motherSplit = Utilities.splitArrayOnIndex(parents.Item2.bits, crossoverIndex);
+
+            Console.WriteLine("Father = "+ parents.Item1.ToString());            
+            Console.WriteLine("Mother = " + parents.Item2.ToString());
+
+            firstChild.bits = fatherSplit.Item1.Concat(motherSplit.Item2).ToArray();
+            secondChild.bits = motherSplit.Item1.Concat(fatherSplit.Item2).ToArray();
+
+            Console.WriteLine("result child 1 (father half 1 + mother half 2) = " + firstChild.ToString());
+            Console.WriteLine("result child 2 (mother half 1 + father half 2) = " + secondChild.ToString());
+
+            return Tuple.Create(firstChild, secondChild);
+        }
+
     }
 }

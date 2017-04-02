@@ -8,7 +8,7 @@ namespace Excersise_2___Genetic_Algorithm
     class BinaryVal
     {
         private static readonly int BINARY_BASE = 2;
-        private int[] bits;
+        public int[] bits;
 
         public BinaryVal(int[] bits)
         {
