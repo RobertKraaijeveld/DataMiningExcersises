@@ -50,5 +50,17 @@ namespace Excersise_2___Genetic_Algorithm
             returnBitsList.Reverse();
             return new BinaryVal(returnBitsList.ToArray());
         }
+
+        public void flipBit(int index)
+        {
+            for (int i = 0; i < bits.Length; i++)
+            {
+                if(index == i)
+                {
+                    var previous = bits[i];
+                    bits[i] = bits[i] == 1 ? 0 : 1;
+                } 
+            }
+        }
     }
 }

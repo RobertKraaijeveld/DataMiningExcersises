@@ -1,9 +1,10 @@
 using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+ 
 namespace Excersise_2___Genetic_Algorithm
 {
     public class GeneticAlgorithm<Ind>
@@ -27,6 +28,10 @@ namespace Excersise_2___Genetic_Algorithm
         public Ind Run(Func<Ind> createIndividual, Func<Ind, double> computeFitness, Func<Ind[], double[], Func<Tuple<Ind, Ind>>> selectTwoParents,
             Func<Tuple<Ind, Ind>, Tuple<Ind, Ind>> crossover, Func<Ind, double, Ind> mutation)
         {
+
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+
             // initialize the first population
             var initialPopulation = Enumerable.Range(0, populationSize).Select(i => createIndividual()).ToArray();
 
@@ -84,8 +89,14 @@ namespace Excersise_2___Genetic_Algorithm
 
             // recompute the fitnesses on the final population and return the best individual
             var finalFitnesses = Enumerable.Range(0, populationSize).Select(i => computeFitness(currentPopulation[i])).ToArray();
+
+            Console.WriteLine("_________________________________");
+            Console.WriteLine("GENETIC ALGORITHM FINISHED IN " + sw.Elapsed.Seconds + "." + sw.Elapsed.Milliseconds + " SECONDS");
+            Console.WriteLine("_________________________________");            
+            Console.WriteLine("Best fitness = " + finalFitnesses.Max());
+            Console.WriteLine("Average fitness = " + finalFitnesses.Average());
+
             return currentPopulation.Select((individual, index) => new Tuple<Ind, double>(individual, finalFitnesses[index])).OrderByDescending(tuple => tuple.Item2).First().Item1;
         }
-
     }
 }

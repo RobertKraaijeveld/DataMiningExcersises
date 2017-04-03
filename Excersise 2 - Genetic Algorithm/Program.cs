@@ -7,35 +7,21 @@ using System.Threading.Tasks;
 namespace Excersise_2___Genetic_Algorithm
 {
     class Program
-    {
+    { 
         private static Random random = new Random(); 
         static void Main(string[] args)
-        {
-            /* FUNCTIONS TO DEFINE (for each problem):
-            Func<Ind> createIndividual;                                 ==> input is nothing, output is a new individual
-            Func<Ind,double> computeFitness;                            ==> input is one individual, output is its fitness
-            Func<Ind[],double[],Func<Tuple<Ind,Ind>>> selectTwoParents; ==> input is an array of individuals (population) and an array of corresponding fitnesses, output is a function which (without any input) returns a tuple with two individuals (parents)
-            Func<Tuple<Ind, Ind>, Tuple<Ind, Ind>> crossover;           ==> input is a tuple with two individuals (parents), output is a tuple with two individuals (offspring/children)
-            Func<Ind, double, Ind> mutation;                            ==> input is one individual and mutation rate, output is the mutated individual
-            
-            public GeneticAlgorithm(double crossoverRate, double mutationRate, bool elitism, int populationSize, int numIterations)
-            {
-                this.crossoverRate = crossoverRate;
-                this.mutationRate = mutationRate;
-                this.elitism = elitism;
-                this.populationSize = populationSize;
-                this.numIterations = numIterations;
-            }
-            */
-
-            var crossoverRate = 0.85;
-            var mutationRate = 0.2;
+        { 
+            var crossoverRate = 0.8;
+            var mutationRate = 0.1;
             var elitism = true;
-            var populationSize = 15;
+            var populationSize = 50;
             var numIterations = 100;
 
             GeneticAlgorithm<BinaryVal> fakeProblemGA = new GeneticAlgorithm<BinaryVal>(crossoverRate, mutationRate, elitism, populationSize, numIterations);
-            var solution = fakeProblemGA.Run(createIndividual, computeFitness, selectTwoParents, crossover, null); 
+            var solution = fakeProblemGA.Run(createIndividual, computeFitness, selectTwoParents, crossover, mutation); 
+
+            Console.WriteLine("Best individual (in binary) = " + solution.ToString());
+            Console.WriteLine("Best individual (in integer) = " + BinaryVal.binaryToInt(solution));
         }
 
         private static BinaryVal createIndividual()
@@ -43,10 +29,6 @@ namespace Excersise_2___Genetic_Algorithm
             return BinaryVal.intToBinary(random.Next(0, 32));
         }
 
-/*
-Func<Ind> createIndividual, Func<Ind, double> computeFitness, Func<Ind[], double[], Func<Tuple<Ind, Ind>>> selectTwoParents,
-            Func<Tuple<Ind, Ind>, Tuple<Ind, Ind>> crossover, Func<Ind, double, Ind> mutation)
- */
 
         private static double computeFitness(BinaryVal binaryVal)
         {
@@ -75,8 +57,6 @@ Func<Ind> createIndividual, Func<Ind, double> computeFitness, Func<Ind[], double
                     if(randomPercentage >= wheelSections[i].Item1 && randomPercentage <= wheelSections[i].Item2
                         && chosenParents.Contains(population[i]) == false)
                     {
-                        Console.WriteLine("Binary value " + BinaryVal.binaryToInt(population[i]) + " has won the roulette since " + randomPercentage + " is greater "
-                        + " than its wheelsection start, " + wheelSections[i].Item1 + " and smaller than " + wheelSections[i].Item2);
                         chosenParents.Add(population[i]);
                         break;
                     }
@@ -86,6 +66,7 @@ Func<Ind> createIndividual, Func<Ind, double> computeFitness, Func<Ind[], double
 
         }
 
+        //TO REFACTOR: no need to convert to percentages
         private static List<Tuple<double, double>> getRouletteWheelSections(BinaryVal[] population, double[] fitnesses)
         {
             var wheelSections = new List<Tuple<double, double>>();
@@ -102,15 +83,10 @@ Func<Ind> createIndividual, Func<Ind, double> computeFitness, Func<Ind[], double
                     var previousSectionEnd = wheelSections[i-1].Item2;
                     var x = previousSectionEnd + currentFitnessPercentage;
 
-                    Console.WriteLine("Adding new percentage section of " + previousSectionEnd + " to " + x + 
-                    " since " + previousSectionEnd + " plus " + currentFitnessPercentage + " equals to " + x);
                     wheelSections.Add(new Tuple<double, double>(previousSectionEnd, x));                                       
                 }
                 else
-                {
-                    Console.WriteLine("Adding new percentage section of " + 0 + " to " + currentFitnessPercentage);                    
                     wheelSections.Add(new Tuple<double, double>(0.0, currentFitnessPercentage));
-                }
             }
             return wheelSections;
         }
@@ -118,7 +94,6 @@ Func<Ind> createIndividual, Func<Ind, double> computeFitness, Func<Ind[], double
         private static Tuple<BinaryVal, BinaryVal> crossover (Tuple<BinaryVal, BinaryVal> parents)
         {
             var crossoverIndex = Utilities.getExistingRandomIndex(parents.Item1.bits, parents.Item2.bits);
-            Console.WriteLine("Crossover index = " + crossoverIndex);
 
             var firstChild = new BinaryVal(new int[5]);
             var secondChild = new BinaryVal(new int[5]);            
@@ -126,17 +101,22 @@ Func<Ind> createIndividual, Func<Ind, double> computeFitness, Func<Ind[], double
             var fatherSplit = Utilities.splitArrayOnIndex(parents.Item1.bits, crossoverIndex);
             var motherSplit = Utilities.splitArrayOnIndex(parents.Item2.bits, crossoverIndex);
 
-            Console.WriteLine("Father = "+ parents.Item1.ToString());            
-            Console.WriteLine("Mother = " + parents.Item2.ToString());
-
             firstChild.bits = fatherSplit.Item1.Concat(motherSplit.Item2).ToArray();
             secondChild.bits = motherSplit.Item1.Concat(fatherSplit.Item2).ToArray();
-
-            Console.WriteLine("result child 1 (father half 1 + mother half 2) = " + firstChild.ToString());
-            Console.WriteLine("result child 2 (mother half 1 + father half 2) = " + secondChild.ToString());
 
             return Tuple.Create(firstChild, secondChild);
         }
 
+        private static BinaryVal mutation(BinaryVal populationMember, double mutationRate)
+        {
+            double randomPercent;
+            for (int i = 0; i < populationMember.bits.Length; i++)
+            {
+                randomPercent = random.getRandomDoubleWithMinMax(0.0, 100.0);
+                if(randomPercent < mutationRate)
+                    populationMember.flipBit(i);                   
+            }
+            return populationMember;
+        }
     }
 }
