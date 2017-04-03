@@ -20,6 +20,7 @@ namespace Excersise_2___Genetic_Algorithm
             GeneticAlgorithm<BinaryVal> fakeProblemGA = new GeneticAlgorithm<BinaryVal>(crossoverRate, mutationRate, elitism, populationSize, numIterations);
             var solution = fakeProblemGA.Run(createIndividual, computeFitness, selectTwoParents, crossover, mutation); 
 
+            Console.WriteLine("---------------------------------------------------");
             Console.WriteLine("Best individual (in binary) = " + solution.ToString());
             Console.WriteLine("Best individual (in integer) = " + BinaryVal.binaryToInt(solution));
         }

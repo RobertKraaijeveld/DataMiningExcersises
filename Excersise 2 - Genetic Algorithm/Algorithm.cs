@@ -90,9 +90,12 @@ namespace Excersise_2___Genetic_Algorithm
             // recompute the fitnesses on the final population and return the best individual
             var finalFitnesses = Enumerable.Range(0, populationSize).Select(i => computeFitness(currentPopulation[i])).ToArray();
 
-            Console.WriteLine("_________________________________");
-            Console.WriteLine("GENETIC ALGORITHM FINISHED IN " + sw.Elapsed.Seconds + "." + sw.Elapsed.Milliseconds + " SECONDS");
-            Console.WriteLine("_________________________________");            
+            Console.WriteLine("___________________________________________________");
+            Console.WriteLine(" ");
+            Console.WriteLine("Genetic algorithm finished in " + sw.Elapsed.Seconds + "." + sw.Elapsed.Milliseconds + " seconds");
+            Console.WriteLine("___________________________________________________");
+            Console.WriteLine(" ");
+
             Console.WriteLine("Best fitness = " + finalFitnesses.Max());
             Console.WriteLine("Average fitness = " + finalFitnesses.Average());
 
