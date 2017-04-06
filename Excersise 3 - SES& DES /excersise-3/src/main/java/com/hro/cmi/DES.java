@@ -1,21 +1,17 @@
 package com.hro.cmi;
 
-import java.awt.print.Paper;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.ArrayList;
 
 public class DES extends Forecast
 {
-    private float beta;
     private ArrayList<Vector2> trendSmoothedVectors = new ArrayList<>();
 
-    public DES(ArrayList<Vector2> originalVectors, int forecastAmount, float beta)
+    public DES(ArrayList<Vector2> originalVectors, int forecastAmount)
     {
         this.originalVectors = originalVectors;
         this.forecastAmount = forecastAmount;
-
-        //TODO: ALSO FIND THE BEST AMOUNT FOR THIS IN computeError
-        this.beta = beta;
-        
         this.unforecastableVectorAmount = 2;
     }
 
@@ -46,7 +42,7 @@ public class DES extends Forecast
         for(int i = 0; i < forecastAmount; i++)
         {
             //check if correct
-            float forecastedValue = lastSmoothedVector.y + (i * lastTrendSmoothedVector.y);
+            double forecastedValue = lastSmoothedVector.y + (i * lastTrendSmoothedVector.y);
             forecastedVectors.add(new Vector2(lastSmoothedVector.x + (i), forecastedValue));
         }
         return forecastedVectors;
@@ -54,12 +50,11 @@ public class DES extends Forecast
 
     private Vector2 computeSmoothedVector(ArrayList<Vector2> smoothedVectors, int position)
     {
-        float originalVectorX = originalVectors.get(position).x;     
-        float smoothedY; 
+        double originalVectorX = originalVectors.get(position).x;     
+        double smoothedY; 
 
         if(position <= unforecastableVectorAmount)
         {
-            System.out.println("position = " + position + " which is smaller than " + unforecastableVectorAmount);
             smoothedY = originalVectors.get(position).y;
             return new Vector2(originalVectorX, smoothedY);
         }
@@ -75,14 +70,14 @@ public class DES extends Forecast
 
     private Vector2 computeTrendSmoothedVector(ArrayList<Vector2> smoothedVectors, int position)
     {
-        float originalVectorX = originalVectors.get(position).x;
-        float smoothedY = smoothedVectors.get(position).y;
+        double originalVectorX = originalVectors.get(position).x;
+        double smoothedY = smoothedVectors.get(position).y;
         
         if(position < unforecastableVectorAmount)
         {
             if (position > 1)
             {
-                float placeHolderForUnsmoothable = originalVectors.get(unforecastableVectorAmount).y 
+                double placeHolderForUnsmoothable = originalVectors.get(unforecastableVectorAmount).y 
                                                             - originalVectors.get(unforecastableVectorAmount - 1).y;
 
                 return new Vector2(originalVectorX, placeHolderForUnsmoothable);
@@ -93,34 +88,51 @@ public class DES extends Forecast
         else
         {
             //X is a time series so we dont smooth it
-            float combinedSmoothAndTrendValueForecast = beta * (smoothedVectors.get(position).y - smoothedVectors.get(position - 1).y)
+            double combinedSmoothAndTrendValueForecast = beta * (smoothedVectors.get(position).y - smoothedVectors.get(position - 1).y)
                                                       + (1.0f - beta) * this.trendSmoothedVectors.get(position - 1).y;
 
             return new Vector2(originalVectorX, combinedSmoothAndTrendValueForecast);
         }
     }
 
-    //error is WAY too high
 
     /*
-        float totalSESerror = 0.0f;
-        for (int i = 0; i < originalVectors.size(); i++) 
-        {
-            totalSESerror += Math.pow(2, (vectors.get(i).y - originalVectors.get(i).y)); 
-        } 
-        return (float) Math.sqrt(totalSESerror / (vectors.size() - unforecastableVectorAmount));
+     OVERRIDDEN ERROR MEASURING
     */
 
     @Override
-    public float computeError(ArrayList<Vector2> smoothedVectors) 
+    public ErrorMeasurer getErrorMeasurements()
     {
-        float totalDESerror = 0.0f;
-        for (int i = 2; i < originalVectors.size(); i++) 
+        ErrorMeasurer em = new ErrorMeasurer();
+        Map<Double, Tuple<Double, Double>> alphasBetasAndErrors = new HashMap<>();
+
+        for(double alpha = 0.0f; alpha < 1.0f; alpha += 0.1f)
         {
-            float combinedSmoothAndTrendValue = smoothedVectors.get(i).y + trendSmoothedVectors.get(i).y;
-            totalDESerror += Math.pow(2, (combinedSmoothAndTrendValue - originalVectors.get(i).y)); 
+            this.alpha = alpha;
+            for(double beta = 0.0f; beta < 1.0f; beta += 0.1)
+            {
+                this.beta = beta;
+
+                ArrayList<Vector2> smoothedVectors = this.forecastFunction();
+                double errorValue = this.computeError(smoothedVectors); 
+
+                alphasBetasAndErrors.put(alpha, new Tuple<Double, Double>(beta, errorValue));            
+            }
+        }
+        em.alphasBetasAndErrors = alphasBetasAndErrors;
+        return em;
+    }
+
+
+    @Override
+    public double computeError(ArrayList<Vector2> smoothedVectors) 
+    {
+        double totalDESerror = 0.0f;
+        for (int i = unforecastableVectorAmount; i < originalVectors.size(); i++) 
+        {
+            double combinedSmoothAndTrendValue = smoothedVectors.get(i - 1).y + trendSmoothedVectors.get(i - 1).y;
+            totalDESerror += Math.pow((combinedSmoothAndTrendValue - originalVectors.get(i).y), 2); 
         }   
-        totalDESerror = totalDESerror / (originalVectors.size() - unforecastableVectorAmount); 
-        return (float) Math.sqrt(totalDESerror);
+        return (double) Math.sqrt(totalDESerror / (smoothedVectors.size() - unforecastableVectorAmount)); 
     }
 }

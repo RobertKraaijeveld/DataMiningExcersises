@@ -18,14 +18,17 @@ public abstract class Forecast
     public ArrayList<Vector2> resultVectors = new ArrayList<>();   
 
     //this will be alpha or beta in SES/DES and will be used by the forecastFunction
-    protected float alpha = 0.0f;
+    public boolean searchForBeta;
+    protected double alpha = 0.0;
+    protected double beta = 0.0;
+
 
     /*
     ABSTRACT METHODS
     */
 
     public abstract ArrayList<Vector2> forecastFunction();
-    public abstract float computeError(ArrayList<Vector2> vectors);
+    public abstract double computeError(ArrayList<Vector2> vectors);
     
 
     /*
@@ -33,10 +36,14 @@ public abstract class Forecast
     */
 
 
-    //TO FIX: Flaw with beta/alpha combos
+    //TO FIX: Beta is not always used by a child
     public ArrayList<Vector2> runForecastWithBestError()
     {
-        this.alpha = 0.8f; // getKeyWithSmallestValue(getErrorCombinations());
+        ErrorMeasurer em = getErrorMeasurements();
+        Tuple<Double, Double> bestAlphaAndBeta = em.getBestAlphaAndBeta();
+
+        this.alpha = bestAlphaAndBeta.first;
+        this.beta = bestAlphaAndBeta.second;
 
         resultVectors = forecastFunction(); 
         return resultVectors;
@@ -47,52 +54,5 @@ public abstract class Forecast
     ERROR COMPUTATION
     */
 
-    private Map<Float, Float> getErrorCombinations()
-    {
-        Map<Float, Float> errorCombination = new HashMap<>();
-
-        for(float alpha = 0.0f; alpha < 1.0f; alpha += 0.01f)
-        {
-            //TO FIX make this cleaner. Now we have to modify members for testing :/
-            this.alpha = alpha;
-
-            ArrayList<Vector2> smoothedVectors = forecastFunction();
-            errorCombination.put(alpha, computeError(smoothedVectors));
-        }
-        return errorCombination;
-    }
-
-
-
-    /* IS THIS POSSIBLE? AS IN, ONLY DEFINING THE FORMULA
-    private Float computeError()
-    {
-        float totalError = 0.0f;        
-        for(int i = 0; i < resultVectors.size(); i++)
-        {
-            //not sure if this is possible
-            totalError += errorFunction();
-        }
-        return (float) Math.sqrt(totalError / (resultVectors.size() - unforecastableVectorAmount));
-    }*/
-
-    //error function is faulty
-    private float getKeyWithSmallestValue(Map<Float, Float> floatMap)
-    {
-        System.out.println("getKeyWithSmallestValue");
-        Float keyWithSmallestValue = 0.0f; 
-        Float smallestValueYet = Float.MAX_VALUE;
-
-        for (Map.Entry<Float, Float> kvPair : floatMap.entrySet()) 
-        {
-            System.out.println("Looking at alpha " + kvPair.getKey() + " has error " + kvPair.getValue());            
-            if(kvPair.getValue() < smallestValueYet)
-            {
-                smallestValueYet = kvPair.getValue();
-                keyWithSmallestValue = kvPair.getKey();
-            }    
-        }
-        System.out.println("Best alpha is " + keyWithSmallestValue);
-        return keyWithSmallestValue;
-    }
+    public abstract ErrorMeasurer getErrorMeasurements();
 }

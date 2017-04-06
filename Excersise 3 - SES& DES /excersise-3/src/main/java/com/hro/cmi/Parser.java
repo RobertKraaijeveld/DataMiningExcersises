@@ -25,8 +25,9 @@ class Parser
 
                 String[] delimiterSeparatedLine = line.split(",");
 
-                float x = Float.parseFloat(delimiterSeparatedLine[0]);
-                float y = Float.parseFloat(delimiterSeparatedLine[1]);
+                double x = Double.parseDouble(delimiterSeparatedLine[0]);
+                double y = Double.parseDouble(delimiterSeparatedLine[1]);
+
                 returnList.add(new Vector2(x, y));                    
             }
             scanner.close();                

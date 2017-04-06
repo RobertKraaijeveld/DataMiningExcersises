@@ -2,6 +2,8 @@ package com.hro.cmi;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.HashMap;
+
 
 class SES extends Forecast
 {
@@ -13,7 +15,6 @@ class SES extends Forecast
     }
 
 
-    //the loop can be abstracted, only the formula needs to be specified
     @Override
     public ArrayList<Vector2> forecastFunction()
     {
@@ -23,22 +24,15 @@ class SES extends Forecast
         {
              smoothedVectors.add(computeSESSmoothedVector(smoothedVectors, i));       
         }
-
         Vector2 lastSmoothedPoint = smoothedVectors.get(smoothedVectors.size() - 1);
         smoothedVectors.addAll(getSESForecast(lastSmoothedPoint));
 
-        //debug
-        for (int i = 0; i < originalVectors.size(); i++) 
-        {
-            System.out.println("originalVector = " + originalVectors.get(i).x + "," + originalVectors.get(i).y);
-            System.out.println("SES smooth = " + smoothedVectors.get(i).x + "," + smoothedVectors.get(i).y);            
-        }        
         return smoothedVectors;
     }
     private Vector2 computeSESSmoothedVector(ArrayList<Vector2> smoothedVectors, int position)
     {
-        float originalVectorX = originalVectors.get(position).x;     
-        float smoothedY; 
+        double originalVectorX = originalVectors.get(position).x;     
+        double smoothedY; 
 
         if(position < unforecastableVectorAmount)
         {
@@ -47,8 +41,13 @@ class SES extends Forecast
         }
         else
         {
-            //NOTE: Formula uses the Roberts (1959) rather than Hunter (1986) method. Both are equally valid.
-            smoothedY = alpha * originalVectors.get(position).y + (1.0f - alpha) * smoothedVectors.get(position - 1).y;
+            /* NOTE: The implemented Formula uses the Hunter (1986) rather than Roberts (1959) method. 
+               The latter is more correct since it does not 'skip' the first position,
+               (which is especially noticable with alpha = 1), but it does not work with the error function.
+                smoothedY = alpha * originalVectors.get(position).y + (1.0f - alpha) * smoothedVectors.get(position - 1).y; 
+            */
+
+            smoothedY = alpha * originalVectors.get(position - 1).y + (1.0f - alpha) * smoothedVectors.get(position - 1).y;            
             return new Vector2(originalVectorX, smoothedY);
         }   
     }
@@ -65,14 +64,36 @@ class SES extends Forecast
     } 
 
 
+    /* 
+    ERROR MEASURING
+    */
+
     @Override
-    public float computeError(ArrayList<Vector2> vectors) 
+    public ErrorMeasurer getErrorMeasurements()
     {
-        float totalSESerror = 0.0f;
+        ErrorMeasurer em = new ErrorMeasurer();        
+        Map<Double, Tuple<Double, Double>> alphasBetasAndErrors = new HashMap<>();
+
+        for(double alpha = 0.0f; alpha < 1.0f; alpha += 0.001f)
+        {
+            double placeHolderBetaValue = 0.0f;
+            this.alpha = alpha;
+
+            ArrayList<Vector2> smoothedVectors = this.forecastFunction();
+            alphasBetasAndErrors.put(alpha, new Tuple<Double, Double>(placeHolderBetaValue, computeError(smoothedVectors)));
+        }
+        em.alphasBetasAndErrors = alphasBetasAndErrors;
+        return em;
+    }
+
+    @Override
+    public double computeError(ArrayList<Vector2> vectors) 
+    {
+        double totalSESerror = 0.0f;
         for (int i = unforecastableVectorAmount; i < originalVectors.size(); i++) 
         {
-            totalSESerror += Math.pow(2, (vectors.get(i).y - originalVectors.get(i).y)); 
+            totalSESerror += Math.pow((vectors.get(i).y - originalVectors.get(i).y), 2); 
         } 
-        return (float) Math.sqrt(totalSESerror / (vectors.size() - unforecastableVectorAmount));
+        return (double) Math.sqrt(totalSESerror / (vectors.size() - unforecastableVectorAmount));
     }
 }

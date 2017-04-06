@@ -55,59 +55,74 @@ public class App extends PApplet
                          
 
         //duplication :/
-        float leftPadding = 40.0f;        
-        float firstPointXposition = 40.0f;
+        double leftPadding = 40.0f;        
+        double firstPointXposition = 40.0f;
         Vector2 previousPointVector = new Vector2(firstPointXposition, 120.0f);
 
 
         //extract to drawLegend or something
         for (Vector2 currentVector : swordSalesPoints) 
         {
-            float shiftedXValue = (currentVector.x * 15) + leftPadding;
-            float shiftedYValue = currentVector.y;
+            double shiftedXValue = (currentVector.x * 15) + leftPadding;
+            double shiftedYValue = currentVector.y;
 
             textSize(10);
-            text(Math.round(currentVector.x), shiftedXValue - 3, 575);
+            text((float) currentVector.x, (float) shiftedXValue - 3, 575);
         }
 
         stroke(255, 0, 0);                                  
         fill(255, 0, 0);
         drawGivenVectors(swordSalesPoints);
 
-        System.out.println("Amount of swordSalesPoints = " + swordSalesPoints.size());
+        drawSES(swordSalesPoints);    
+        drawDES(swordSalesPoints);
+    }
 
+    private void drawSES(ArrayList<Vector2> swordSalesPoints)
+    {
         SES sesForecast = new SES(swordSalesPoints, 5);
         ArrayList<Vector2> sesSwordSalesPoints = sesForecast.runForecastWithBestError();
+        
         stroke(0, 0, 255);                                  
         fill(0, 0, 255);
         drawGivenVectors(sesSwordSalesPoints);
 
-        //TODO: FIND BEST VALUE OF BETA INSTEAD OF PASSING IT
-        DES desForecast = new DES(swordSalesPoints, 5, 1.0f);
+        System.out.println("Final alpha for SES: " + sesForecast.alpha);
+    }
+
+    private void drawDES(ArrayList<Vector2> swordSalesPoints)
+    {
+        DES desForecast = new DES(swordSalesPoints, 5);
+        desForecast.searchForBeta = true;
+
         ArrayList<Vector2> desSwordSalesPoints = desForecast.runForecastWithBestError();
+        
         stroke(0, 128, 0);                                  
         fill(0, 128, 0);
         drawGivenVectors(desSwordSalesPoints);
+
+        System.out.println("Final alpha for DES: " + desForecast.alpha);   
+        System.out.println("Final beta for DES: " + desForecast.beta);                     
     }
 
     private void drawGivenVectors(ArrayList<Vector2> vectors)
     {
-        float leftPadding = 40.0f;        
-        float firstPointXposition = 40.0f;
+        double leftPadding = 40.0f;        
+        double firstPointXposition = 40.0f;
         Vector2 previousPointVector = new Vector2(firstPointXposition, 120.0f);
 
         for (Vector2 currentVector : vectors) 
         {
-            float shiftedXValue = (currentVector.x * 15) + leftPadding;
-            float shiftedYValue = currentVector.y;
+            double shiftedXValue = (currentVector.x * 15) + leftPadding;
+            double shiftedYValue = currentVector.y;
 
             //inverting so we dont have to map/flip the y values
             invertYAxis();
            
-            ellipse(shiftedXValue, shiftedYValue, 5.0f, 5.0f);
+            ellipse((float) shiftedXValue, (float) shiftedYValue, 5.0f, 5.0f);
            
             if(previousPointVector.x != firstPointXposition)
-                line(previousPointVector.x, previousPointVector.y, shiftedXValue, shiftedYValue);
+                line((float) previousPointVector.x, (float) previousPointVector.y, (float) shiftedXValue, (float) shiftedYValue);
 
             previousPointVector.x = shiftedXValue; 
             previousPointVector.y = shiftedYValue;
