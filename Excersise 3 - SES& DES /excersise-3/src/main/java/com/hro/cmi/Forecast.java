@@ -36,7 +36,7 @@ public abstract class Forecast
     //TO FIX: Flaw with beta/alpha combos
     public ArrayList<Vector2> runForecastWithBestError()
     {
-        this.alpha = 0.7f; // getKeyWithSmallestValue(getErrorCombinations());
+        this.alpha = 0.8f; // getKeyWithSmallestValue(getErrorCombinations());
 
         resultVectors = forecastFunction(); 
         return resultVectors;

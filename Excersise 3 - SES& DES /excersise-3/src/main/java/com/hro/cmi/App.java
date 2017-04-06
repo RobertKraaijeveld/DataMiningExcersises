@@ -83,7 +83,7 @@ public class App extends PApplet
         drawGivenVectors(sesSwordSalesPoints);
 
         //TODO: FIND BEST VALUE OF BETA INSTEAD OF PASSING IT
-        DES desForecast = new DES(swordSalesPoints, 5, 0.1f);
+        DES desForecast = new DES(swordSalesPoints, 5, 1.0f);
         ArrayList<Vector2> desSwordSalesPoints = desForecast.runForecastWithBestError();
         stroke(0, 128, 0);                                  
         fill(0, 128, 0);

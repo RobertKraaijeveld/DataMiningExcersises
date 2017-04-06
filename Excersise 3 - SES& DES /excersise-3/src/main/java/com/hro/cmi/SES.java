@@ -47,7 +47,7 @@ class SES extends Forecast
         }
         else
         {
-            //NOTE: Formula uses the Roberts (1959) rather than Hunter (1986). Both are equally valid.
+            //NOTE: Formula uses the Roberts (1959) rather than Hunter (1986) method. Both are equally valid.
             smoothedY = alpha * originalVectors.get(position).y + (1.0f - alpha) * smoothedVectors.get(position - 1).y;
             return new Vector2(originalVectorX, smoothedY);
         }   

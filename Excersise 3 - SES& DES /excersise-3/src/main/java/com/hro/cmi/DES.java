@@ -35,18 +35,6 @@ public class DES extends Forecast
         Vector2 lastSmoothedVector = smoothedVectors.get(smoothedVectors.size() - 1);
         Vector2 lastTrendSmoothedVector = this.trendSmoothedVectors.get(this.trendSmoothedVectors.size() - 1);        
 
-        //debug
-        System.out.println("-------------------------------------");
-        System.out.println("-------------------------------------");        
-        System.out.println("-------------------------------------");
-        for (int i = 0; i < originalVectors.size(); i++) 
-        {
-            System.out.println("originalVector = " + originalVectors.get(i).x + "," + originalVectors.get(i).y);
-            System.out.println("DES smooth = " + smoothedVectors.get(i).x + "," + smoothedVectors.get(i).y);            
-        } 
-
-
-
         smoothedVectors.addAll(getDESForecast(lastSmoothedVector, lastTrendSmoothedVector));
         return smoothedVectors;
     }
@@ -59,7 +47,6 @@ public class DES extends Forecast
         {
             //check if correct
             float forecastedValue = lastSmoothedVector.y + (i * lastTrendSmoothedVector.y);
-
             forecastedVectors.add(new Vector2(lastSmoothedVector.x + (i), forecastedValue));
         }
         return forecastedVectors;
@@ -70,8 +57,9 @@ public class DES extends Forecast
         float originalVectorX = originalVectors.get(position).x;     
         float smoothedY; 
 
-        if(position < unforecastableVectorAmount)
+        if(position <= unforecastableVectorAmount)
         {
+            System.out.println("position = " + position + " which is smaller than " + unforecastableVectorAmount);
             smoothedY = originalVectors.get(position).y;
             return new Vector2(originalVectorX, smoothedY);
         }
@@ -94,10 +82,10 @@ public class DES extends Forecast
         {
             if (position > 1)
             {
-                float combinedSmoothAndTrendValueForecast = smoothedVectors.get(unforecastableVectorAmount).y 
-                                                            - smoothedVectors.get(unforecastableVectorAmount - 1).y;
+                float placeHolderForUnsmoothable = originalVectors.get(unforecastableVectorAmount).y 
+                                                            - originalVectors.get(unforecastableVectorAmount - 1).y;
 
-                return new Vector2(originalVectorX, combinedSmoothAndTrendValueForecast);
+                return new Vector2(originalVectorX, placeHolderForUnsmoothable);
             }
             else
                 return new Vector2(originalVectorX, smoothedY);
@@ -111,13 +99,6 @@ public class DES extends Forecast
             return new Vector2(originalVectorX, combinedSmoothAndTrendValueForecast);
         }
     }
-
-
-    //sqrt of 
-        //sum of fi (being st-1 + bt-1) minus the original value 
-        //divided by
-        //the amount of points minus the amount of unforecastables (2, in our case)
-
 
     //error is WAY too high
 
