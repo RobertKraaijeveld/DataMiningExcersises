@@ -73,12 +73,21 @@ public class App extends PApplet
         stroke(255, 0, 0);                                  
         fill(255, 0, 0);
         drawGivenVectors(swordSalesPoints);
-        
 
-        ArrayList<Vector2> smoothedSwordSalesPoints = Forecasting.runSESWithBestAlpha(swordSalesPoints);
+        System.out.println("Amount of swordSalesPoints = " + swordSalesPoints.size());
+
+        SES sesForecast = new SES(swordSalesPoints, 5);
+        ArrayList<Vector2> sesSwordSalesPoints = sesForecast.runForecastWithBestError();
         stroke(0, 0, 255);                                  
         fill(0, 0, 255);
-        drawGivenVectors(smoothedSwordSalesPoints);
+        drawGivenVectors(sesSwordSalesPoints);
+
+        //TODO: FIND BEST VALUE OF BETA INSTEAD OF PASSING IT
+        DES desForecast = new DES(swordSalesPoints, 5, 0.1f);
+        ArrayList<Vector2> desSwordSalesPoints = desForecast.runForecastWithBestError();
+        stroke(0, 128, 0);                                  
+        fill(0, 128, 0);
+        drawGivenVectors(desSwordSalesPoints);
     }
 
     private void drawGivenVectors(ArrayList<Vector2> vectors)
