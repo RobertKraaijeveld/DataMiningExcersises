@@ -9,7 +9,7 @@ public class ErrorMeasurer
 
     //just one method that returns both alpha and beta; getBestAlphaAndBeta(). 
     //and simply set both in Forecast. The children decide what they use.
-    public Tuple<Double, Double> getBestAlphaAndBeta()
+    public Triple<Double, Double, Double> getBestAlphaAndBeta()
     {
         double bestAlpha = 0.0;
         double bestBeta = 0.0;
@@ -17,8 +17,6 @@ public class ErrorMeasurer
         double smallestErrorYet = Double.MAX_VALUE;          
         for (Triple<Double, Double, Double> measurement : alphasBetasAndErrors) 
         {
-            System.out.println("measurement { " + " alpha = " + measurement.first
-                                + " beta = " + measurement.second + " ERROR = " + measurement.third + " }");
             if(measurement.third < smallestErrorYet)
             {
                 smallestErrorYet = measurement.third;
@@ -26,7 +24,8 @@ public class ErrorMeasurer
                 bestBeta = measurement.second;
             }
         }        
-        return new Tuple<Double, Double>(bestAlpha, bestBeta);
+
+        return new Triple<Double, Double, Double>(bestAlpha, bestBeta, smallestErrorYet);
     }
 }
 

@@ -18,6 +18,7 @@ public abstract class Forecast
     public boolean searchForBeta;
     protected double alpha = 0.0;
     protected double beta = 0.0;
+    protected double error = 0.0;
 
 
     /*
@@ -37,10 +38,11 @@ public abstract class Forecast
     public ArrayList<Vector2> runForecastWithBestError()
     {
         ErrorMeasurer em = getErrorMeasurements();
-        Tuple<Double, Double> bestAlphaAndBeta = em.getBestAlphaAndBeta();
+        Triple<Double, Double, Double> bestAlphaAndBetaAndError = em.getBestAlphaAndBeta();
 
-        this.alpha = bestAlphaAndBeta.first;
-        this.beta = bestAlphaAndBeta.second;
+        this.alpha = bestAlphaAndBetaAndError.first;
+        this.beta = bestAlphaAndBetaAndError.second;
+        this.error = bestAlphaAndBetaAndError.third;
 
         resultVectors = forecastFunction(); 
         return resultVectors;

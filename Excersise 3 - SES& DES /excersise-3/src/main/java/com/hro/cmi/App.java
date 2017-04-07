@@ -38,7 +38,7 @@ public class App extends PApplet
 
     private void drawLegend()
     {
-        text("str1", 10, 10);    
+
     }
 
     private void drawAxises()
@@ -48,7 +48,7 @@ public class App extends PApplet
         stroke(0, 0, 0);
 
         //x axis 
-        line(40, 30, 990, 30);   
+        line(40, 30, 690, 30);   
         //y axis
         line(40, 30, 40, 600);           
 
@@ -72,13 +72,13 @@ public class App extends PApplet
             text(i, (float) firstPointPosition + positionStep, 660);            
         }
 
-        float valueStep = 80.0f;
-        positionStep = 635.0f;
+        float valueStep = 145.0f;
+        positionStep = 605.0f;
 
         for(int i = 0; i < 20; i++)
         {
             positionStep -= 20.0f;
-            valueStep += 35.0f;
+            valueStep += 20.0f;
 
             text(Float.toString(valueStep), 0.0f, (float) firstPointPosition + positionStep);            
         }
@@ -98,6 +98,7 @@ public class App extends PApplet
         drawGivenVectors(sesSwordSalesPoints);
 
         System.out.println("Final alpha for SES: " + sesForecast.alpha);
+        System.out.println("Final error for SES: " + sesForecast.error);            
     }
 
     private void drawDES(ArrayList<Vector2> swordSalesPoints)
@@ -112,7 +113,8 @@ public class App extends PApplet
         drawGivenVectors(desSwordSalesPoints);
 
         System.out.println("Final alpha for DES: " + desForecast.alpha);   
-        System.out.println("Final beta for DES: " + desForecast.beta);                     
+        System.out.println("Final beta for DES: " + desForecast.beta);
+        System.out.println("Final error for DES: " + desForecast.error);    
     }
 
     private void drawGivenVectors(ArrayList<Vector2> vectors)

@@ -13,12 +13,16 @@ class SES extends Forecast
     }
 
 
+    //rename
     @Override
     public ArrayList<Vector2> forecastFunction()
     {
         ArrayList<Vector2> smoothedVectors = new ArrayList<>();
 
-        for (int i = 0; i < originalVectors.size(); i++) 
+        Vector2 firstOriginal = originalVectors.get(0);
+        smoothedVectors.add(firstOriginal);
+
+        for (int i = 1; i < originalVectors.size() + 1; i++) 
         {
              smoothedVectors.add(computeSESSmoothedVector(smoothedVectors, i));       
         }
@@ -29,31 +33,32 @@ class SES extends Forecast
     }
     private Vector2 computeSESSmoothedVector(ArrayList<Vector2> smoothedVectors, int position)
     {
-        double originalVectorX = originalVectors.get(position).x;     
+        double originalVectorX;
         double smoothedY; 
 
-        if(position < unforecastableVectorAmount)
-        {
-            smoothedY = originalVectors.get(position).y;
-            return new Vector2(originalVectorX, smoothedY);
-        }
-        else
-        {
             /* NOTE: The implemented Formula uses the Hunter (1986) rather than Roberts (1959) method. 
                The latter is more correct since it does not 'skip' the first position,
                (which is especially noticable with alpha = 1), but it does not work with the error function.
                 smoothedY = alpha * originalVectors.get(position).y + (1.0f - alpha) * smoothedVectors.get(position - 1).y; 
             */
 
-            smoothedY = alpha * originalVectors.get(position - 1).y + (1.0f - alpha) * smoothedVectors.get(position - 1).y;            
-            return new Vector2(originalVectorX, smoothedY);
-        }   
+        if(position == originalVectors.size())
+        {
+            originalVectorX = originalVectors.get(position - 1).x + 1;             
+            smoothedY = alpha * originalVectors.get(position - 1).y + (1.0f - alpha) * smoothedVectors.get(position - 1).y;              
+        }
+        else
+        {
+            originalVectorX = originalVectors.get(position).x;                 
+            smoothedY = alpha * originalVectors.get(position - 1).y + (1.0f - alpha) * smoothedVectors.get(position - 1).y;      
+        }
+        return new Vector2(originalVectorX, smoothedY);
     }
 
     private ArrayList<Vector2> getSESForecast(Vector2 lastSmoothedPoint)
     {
         ArrayList<Vector2> returnListToBeMerged = new ArrayList<>();
-        for(int i = unforecastableVectorAmount; i < forecastAmount; i++)
+        for(int i = 0; i < forecastAmount; i++)
         {
             Vector2 newPoint = new Vector2(lastSmoothedPoint.x + (i + 1), lastSmoothedPoint.y); 
             returnListToBeMerged.add(newPoint);

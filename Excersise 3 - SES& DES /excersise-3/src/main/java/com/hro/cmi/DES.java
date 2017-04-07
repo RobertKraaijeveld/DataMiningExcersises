@@ -21,9 +21,19 @@ public class DES extends Forecast
     @Override
     public ArrayList<Vector2> forecastFunction()
     {
+        //make prettier
         ArrayList<Vector2> smoothedVectors = new ArrayList<>();
+        Vector2 firstOriginal = originalVectors.get(0);
+        Vector2 secondOriginal = originalVectors.get(1);
 
-        for (int i = 0; i < originalVectors.size(); i++) 
+        smoothedVectors.add(firstOriginal);
+        smoothedVectors.add(secondOriginal);
+        
+        this.trendSmoothedVectors.add(firstOriginal);
+        this.trendSmoothedVectors.add(new Vector2(secondOriginal.x, (secondOriginal.y - firstOriginal.y)));
+
+
+        for (int i = unforecastableVectorAmount; i < originalVectors.size(); i++) 
         {
             smoothedVectors.add(computeSmoothedVector(smoothedVectors, i));
             this.trendSmoothedVectors.add(computeTrendSmoothedVector(smoothedVectors, i));
@@ -41,7 +51,6 @@ public class DES extends Forecast
 
         for(int i = 0; i < forecastAmount; i++)
         {
-            //check if correct
             double forecastedValue = lastSmoothedVector.y + (i * lastTrendSmoothedVector.y);
             forecastedVectors.add(new Vector2(lastSmoothedVector.x + (i), forecastedValue));
         }
@@ -53,7 +62,7 @@ public class DES extends Forecast
         double originalVectorX = originalVectors.get(position).x;     
         double smoothedY; 
 
-        if(position <= unforecastableVectorAmount)
+        if(position < unforecastableVectorAmount)
         {
             smoothedY = originalVectors.get(position).y;
             return new Vector2(originalVectorX, smoothedY);
@@ -73,12 +82,13 @@ public class DES extends Forecast
         double originalVectorX = originalVectors.get(position).x;
         double smoothedY = smoothedVectors.get(position).y;
         
+        //position ook uitschrijven
         if(position < unforecastableVectorAmount)
         {
-            if (position > 1)
+            if (position > 0)
             {
                 double placeHolderForUnsmoothable = originalVectors.get(unforecastableVectorAmount).y 
-                                                            - originalVectors.get(unforecastableVectorAmount - 1).y;
+                                                    - originalVectors.get(unforecastableVectorAmount - 1).y;
 
                 return new Vector2(originalVectorX, placeHolderForUnsmoothable);
             }
