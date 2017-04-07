@@ -24,21 +24,39 @@ public class App extends PApplet
 
     public void draw()
     {
-        background(220);
-        fill(50,100);
+        background(225, 225, 225);
+        fill(0,0,0);
 
-        drawLegend();
         drawAxises();
-        drawBaseValuesAndAxisesValues();
 
+        drawBaseValuesAndAxisesValues();
 
         drawSES(swordSalesPoints);    
         drawDES(swordSalesPoints);
+
+        drawLegend();
+        
     }
 
     private void drawLegend()
     {
+        textSize(16);
 
+        fill(255, 0, 0);
+        text("Red line: Original values", 550.0f, 90.0f);
+
+        fill(0, 0, 255);
+        text("Blue line: Single exponential smoothing", 550.0f, 120.0f);
+
+        fill(0, 128, 0);
+        text("Green line: Double exponential smoothing", 550.0f, 150.0f);
+
+        textSize(40);
+        fill(0,0,0);
+        text("Forecast of sword sales", 10.0f, 100.0f);       
+
+        textSize(9);
+        text("Source: http://eu.wiley.com/WileyCDA/WileyTitle/productCd-111866146X.html", 10.0f, 115.0f);               
     }
 
     private void drawAxises()
@@ -48,9 +66,9 @@ public class App extends PApplet
         stroke(0, 0, 0);
 
         //x axis 
-        line(40, 30, 690, 30);   
+        line(40, 30, 920, 30);   
         //y axis
-        line(40, 30, 40, 600);           
+        line(40, 30, 40, 460);           
 
         popMatrix();                    
     }
@@ -59,19 +77,23 @@ public class App extends PApplet
     {
         double firstPointPosition = 30.0f;
 
-        //X AXIS VALUES
+        //X axis values
         float positionStep = 0.0f;
         
-        for(int i = 0; i < 37; i++)
+        for(int i = 0; i < 49; i++)
         {
             if(i < 9)
-                positionStep += 12.0f;
+                positionStep += 14.0f;
+            else if (i > 35)
+                positionStep += 16f;                
             else
-                positionStep += 19.4f;
+                positionStep += 20f;
                 
-            text(i, (float) firstPointPosition + positionStep, 660);            
+            textSize(9);
+            text(i, (float) firstPointPosition + positionStep, 665);            
         }
 
+        //Y axis values
         float valueStep = 145.0f;
         positionStep = 605.0f;
 
@@ -83,8 +105,9 @@ public class App extends PApplet
             text(Float.toString(valueStep), 0.0f, (float) firstPointPosition + positionStep);            
         }
 
-        stroke(255, 0, 0);                                  
+        stroke(255, 0, 0);  
         fill(255, 0, 0);
+                                        
         drawGivenVectors(swordSalesPoints);
     }
 
@@ -97,8 +120,14 @@ public class App extends PApplet
         fill(0, 0, 255);
         drawGivenVectors(sesSwordSalesPoints);
 
-        System.out.println("Final alpha for SES: " + sesForecast.alpha);
-        System.out.println("Final error for SES: " + sesForecast.error);            
+        textSize(18);
+        fill(0, 0, 255);
+        text("SES Measurements", 10.0f, 145.0f);
+
+        textSize(13);
+        fill(0,0,0);
+        text("SES Alpha: " + Double.toString(sesForecast.alpha).substring(0, 6), 10.0f, 170.0f);
+        text("SES Error: " + Double.toString(sesForecast.error).substring(0, 6), 10.0f, 185.0f);
     }
 
     private void drawDES(ArrayList<Vector2> swordSalesPoints)
@@ -112,9 +141,16 @@ public class App extends PApplet
         fill(0, 128, 0);
         drawGivenVectors(desSwordSalesPoints);
 
-        System.out.println("Final alpha for DES: " + desForecast.alpha);   
-        System.out.println("Final beta for DES: " + desForecast.beta);
-        System.out.println("Final error for DES: " + desForecast.error);    
+        textSize(18);
+        fill(0, 128, 0);
+        text("DES Measurements", 200.0f, 145.0f);
+
+        textSize(13);
+        fill(0,0,0);
+        text("DES Alpha: " + Double.toString(desForecast.alpha).substring(0, 6), 200.0f, 170.0f);
+        text("DES Beta: " + Double.toString(desForecast.beta).substring(0, 6), 200.0f, 185.0f);   
+        text("DES Error: " + Double.toString(desForecast.error).substring(0, 6), 200.0f, 200.0f);   
+        
     }
 
     private void drawGivenVectors(ArrayList<Vector2> vectors)
@@ -144,7 +180,7 @@ public class App extends PApplet
     }
 
 
-    //temporarily inverting y values can be used because processings' y = 0 starts at the top left         
+    //temporarily inverting y values is used because processings' y = 0 starts at the top left         
     private void invertYAxis()
     {
         pushMatrix();
