@@ -1,9 +1,7 @@
 package com.hro.cmi;
 
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
-
+import java.util.Set;
 
 class SES extends Forecast
 {
@@ -72,15 +70,15 @@ class SES extends Forecast
     public ErrorMeasurer getErrorMeasurements()
     {
         ErrorMeasurer em = new ErrorMeasurer();        
-        Map<Double, Tuple<Double, Double>> alphasBetasAndErrors = new HashMap<>();
+        ArrayList<Triple<Double, Double, Double>> alphasBetasAndErrors = new ArrayList<>();
 
-        for(double alpha = 0.0f; alpha < 1.0f; alpha += 0.001f)
+        for(double alpha = 0.01f; alpha < 1.0f; alpha += 0.01f)
         {
             double placeHolderBetaValue = 0.0f;
             this.alpha = alpha;
 
             ArrayList<Vector2> smoothedVectors = this.forecastFunction();
-            alphasBetasAndErrors.put(alpha, new Tuple<Double, Double>(placeHolderBetaValue, computeError(smoothedVectors)));
+            alphasBetasAndErrors.add(new Triple(alpha, placeHolderBetaValue, computeError(smoothedVectors)));
         }
         em.alphasBetasAndErrors = alphasBetasAndErrors;
         return em;

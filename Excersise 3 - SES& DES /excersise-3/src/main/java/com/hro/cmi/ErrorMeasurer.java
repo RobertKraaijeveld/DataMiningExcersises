@@ -1,11 +1,11 @@
 package com.hro.cmi;
 
-import java.util.Map;
+import java.util.ArrayList;
 
 public class ErrorMeasurer
 {
     //kinda shitty that even non-beta users have to supply dummy beta values
-    public Map<Double, Tuple<Double, Double>> alphasBetasAndErrors;
+    public ArrayList<Triple<Double, Double, Double>> alphasBetasAndErrors;
 
     //just one method that returns both alpha and beta; getBestAlphaAndBeta(). 
     //and simply set both in Forecast. The children decide what they use.
@@ -15,13 +15,15 @@ public class ErrorMeasurer
         double bestBeta = 0.0;
 
         double smallestErrorYet = Double.MAX_VALUE;          
-        for (Map.Entry<Double, Tuple<Double,Double>> measurement : alphasBetasAndErrors.entrySet()) 
+        for (Triple<Double, Double, Double> measurement : alphasBetasAndErrors) 
         {
-            if(measurement.getValue().second < smallestErrorYet)
+            System.out.println("measurement { " + " alpha = " + measurement.first
+                                + " beta = " + measurement.second + " ERROR = " + measurement.third + " }");
+            if(measurement.third < smallestErrorYet)
             {
-                smallestErrorYet = measurement.getValue().second;
-                bestAlpha = measurement.getKey();
-                bestBeta = measurement.getValue().first;
+                smallestErrorYet = measurement.third;
+                bestAlpha = measurement.first;
+                bestBeta = measurement.second;
             }
         }        
         return new Tuple<Double, Double>(bestAlpha, bestBeta);

@@ -5,7 +5,6 @@ public class Tuple<T, J>
     public T first;
     public J second;
 
-
     public Tuple(){}
 
     public Tuple(T first, J second) 

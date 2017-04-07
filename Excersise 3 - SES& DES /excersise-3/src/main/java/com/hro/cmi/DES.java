@@ -1,7 +1,7 @@
 package com.hro.cmi;
 
-import java.util.Map;
-import java.util.HashMap;
+import java.util.Set;
+import java.util.HashSet;
 import java.util.ArrayList;
 
 public class DES extends Forecast
@@ -88,8 +88,8 @@ public class DES extends Forecast
         else
         {
             //X is a time series so we dont smooth it
-            double combinedSmoothAndTrendValueForecast = beta * (smoothedVectors.get(position).y - smoothedVectors.get(position - 1).y)
-                                                      + (1.0f - beta) * this.trendSmoothedVectors.get(position - 1).y;
+            double combinedSmoothAndTrendValueForecast = this.beta * (smoothedVectors.get(position).y - smoothedVectors.get(position - 1).y)
+                                                      + (1.0f - this.beta) * this.trendSmoothedVectors.get(position - 1).y;
 
             return new Vector2(originalVectorX, combinedSmoothAndTrendValueForecast);
         }
@@ -104,19 +104,19 @@ public class DES extends Forecast
     public ErrorMeasurer getErrorMeasurements()
     {
         ErrorMeasurer em = new ErrorMeasurer();
-        Map<Double, Tuple<Double, Double>> alphasBetasAndErrors = new HashMap<>();
+        ArrayList<Triple<Double, Double, Double>> alphasBetasAndErrors = new ArrayList<>();
 
-        for(double alpha = 0.0f; alpha < 1.0f; alpha += 0.1f)
+        for(double alpha = 0.01f; alpha < 1.0f; alpha += 0.1f)
         {
             this.alpha = alpha;
-            for(double beta = 0.0f; beta < 1.0f; beta += 0.1)
+            for(double beta = 0.01f; beta < 1.0f; beta += 0.01f)
             {
                 this.beta = beta;
 
                 ArrayList<Vector2> smoothedVectors = this.forecastFunction();
                 double errorValue = this.computeError(smoothedVectors); 
 
-                alphasBetasAndErrors.put(alpha, new Tuple<Double, Double>(beta, errorValue));            
+                alphasBetasAndErrors.add(new Triple(alpha, beta, errorValue));            
             }
         }
         em.alphasBetasAndErrors = alphasBetasAndErrors;
@@ -133,6 +133,6 @@ public class DES extends Forecast
             double combinedSmoothAndTrendValue = smoothedVectors.get(i - 1).y + trendSmoothedVectors.get(i - 1).y;
             totalDESerror += Math.pow((combinedSmoothAndTrendValue - originalVectors.get(i).y), 2); 
         }   
-        return (double) Math.sqrt(totalDESerror / (smoothedVectors.size() - unforecastableVectorAmount)); 
+        return (double) Math.sqrt(totalDESerror / (originalVectors.size() - unforecastableVectorAmount)); 
     }
 }

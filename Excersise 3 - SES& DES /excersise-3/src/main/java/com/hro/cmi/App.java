@@ -7,10 +7,15 @@ import java.util.ArrayList;
 
 public class App extends PApplet
 {
+    
     private static final int APPLET_WIDTH = 1040;
     private static final int APPLET_HEIGHT = 680;
+    private ArrayList<Vector2> swordSalesPoints = Parser.parseCsvToPoints("/home/robert/Documents/Projects/DataMiningExcersises/Excersise 3 - SES& DES /excersise-3/docs/SwordForecasting.csv");
+    
+    private static final int YAXIS_OFFSET = 100;
+    private static final int XAXIS_OFFSET = 18;
+        
 
-    //do maggis code 'challenge': box and triangle in console
     public void setup() {
         noSmooth();
         noLoop();
@@ -23,10 +28,12 @@ public class App extends PApplet
         fill(50,100);
 
         drawLegend();
-
-        
         drawAxises();
-        drawBaseValues();
+        drawBaseValuesAndAxisesValues();
+
+
+        drawSES(swordSalesPoints);    
+        drawDES(swordSalesPoints);
     }
 
     private void drawLegend()
@@ -40,47 +47,50 @@ public class App extends PApplet
         
         stroke(0, 0, 0);
 
-        //x axis           
-        line(40, 120, 590, 120);   
-
+        //x axis 
+        line(40, 30, 990, 30);   
         //y axis
-        line(40, 120, 40, 320);           
+        line(40, 30, 40, 600);           
 
         popMatrix();                    
     }
 
-    private void drawBaseValues()
+    private void drawBaseValuesAndAxisesValues()
     {
-        ArrayList<Vector2> swordSalesPoints = Parser.parseCsvToPoints("/home/robert/Documents/Projects/DataMiningExcersises/Excersise 3 - SES& DES /excersise-3/docs/SwordForecasting.csv");
-                         
+        double firstPointPosition = 30.0f;
 
-        //duplication :/
-        double leftPadding = 40.0f;        
-        double firstPointXposition = 40.0f;
-        Vector2 previousPointVector = new Vector2(firstPointXposition, 120.0f);
-
-
-        //extract to drawLegend or something
-        for (Vector2 currentVector : swordSalesPoints) 
+        //X AXIS VALUES
+        float positionStep = 0.0f;
+        
+        for(int i = 0; i < 37; i++)
         {
-            double shiftedXValue = (currentVector.x * 15) + leftPadding;
-            double shiftedYValue = currentVector.y;
+            if(i < 9)
+                positionStep += 12.0f;
+            else
+                positionStep += 19.4f;
+                
+            text(i, (float) firstPointPosition + positionStep, 660);            
+        }
 
-            textSize(10);
-            text((float) currentVector.x, (float) shiftedXValue - 3, 575);
+        float valueStep = 80.0f;
+        positionStep = 635.0f;
+
+        for(int i = 0; i < 20; i++)
+        {
+            positionStep -= 20.0f;
+            valueStep += 35.0f;
+
+            text(Float.toString(valueStep), 0.0f, (float) firstPointPosition + positionStep);            
         }
 
         stroke(255, 0, 0);                                  
         fill(255, 0, 0);
         drawGivenVectors(swordSalesPoints);
-
-        drawSES(swordSalesPoints);    
-        drawDES(swordSalesPoints);
     }
 
     private void drawSES(ArrayList<Vector2> swordSalesPoints)
     {
-        SES sesForecast = new SES(swordSalesPoints, 5);
+        SES sesForecast = new SES(swordSalesPoints, 11);
         ArrayList<Vector2> sesSwordSalesPoints = sesForecast.runForecastWithBestError();
         
         stroke(0, 0, 255);                                  
@@ -92,7 +102,7 @@ public class App extends PApplet
 
     private void drawDES(ArrayList<Vector2> swordSalesPoints)
     {
-        DES desForecast = new DES(swordSalesPoints, 5);
+        DES desForecast = new DES(swordSalesPoints, 11);
         desForecast.searchForBeta = true;
 
         ArrayList<Vector2> desSwordSalesPoints = desForecast.runForecastWithBestError();
@@ -113,8 +123,8 @@ public class App extends PApplet
 
         for (Vector2 currentVector : vectors) 
         {
-            double shiftedXValue = (currentVector.x * 15) + leftPadding;
-            double shiftedYValue = currentVector.y;
+            double shiftedXValue = (currentVector.x * XAXIS_OFFSET) + leftPadding;
+            double shiftedYValue = currentVector.y - YAXIS_OFFSET;
 
             //inverting so we dont have to map/flip the y values
             invertYAxis();
