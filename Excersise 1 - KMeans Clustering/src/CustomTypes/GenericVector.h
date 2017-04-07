@@ -12,7 +12,7 @@ class GenericVector
    public:
     vector<float> values;   
 
-    //bad robert, using hardcoded column values like that
+    //standard data-structure for accompanied data
     GenericVector(){ values = vector<float>(32, 0.0);  };
     GenericVector(vector<float> v);
 

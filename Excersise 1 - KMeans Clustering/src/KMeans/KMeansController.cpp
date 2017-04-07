@@ -6,12 +6,9 @@
 
 using namespace std;
 
+
 KMeansIteration KMeansController::getIterationWithBestSSE()
 {
-    //todo: Use sorting algorithm instead and make this a ref.
-    //also, make this a null or something instead of the first
-    //duplicated in kmeanscontroller
-
     pair<int&, float> bestIterationIdAndSSE (iterations[0].iterationId, iterations[0].sumOfSquaredErrors);
 
     //maybe tell iteration to calc sse here?
@@ -40,17 +37,15 @@ KMeansIteration KMeansController::getIterationWithBestSSE()
 }
 
 
-//TODO: set iterationAmount by user
 void KMeansController::run()
 {
     int iterationsCount = 0;
 
-    while(iterationsCount < iterationAmount)
+    while(iterationsCount < algorithmIterationAmount)
     {
         KMeansIteration kmeansIteration(points, clusterAmount, iterationsCount);
         kmeansIteration.runIteration();
 
-        //check if done?
         iterations.push_back(kmeansIteration);
         iterationsCount++;
     }

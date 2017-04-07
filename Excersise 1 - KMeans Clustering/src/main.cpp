@@ -17,16 +17,13 @@ pair<int, int> getIterationAndClusterAmount()
 	int clusterAmount = stoi(clusterAmountStr);
 
 	cout << "Enter the amount of iterations you wish to use: " << endl;
-	string iterationAmountStr;
-	getline (cin, iterationAmountStr);
+	string algorithmIterationAmountStr;
+	getline (cin, algorithmIterationAmountStr);
 	
-	int iterationAmount = stoi(iterationAmountStr);
+	int algorithmIterationAmount = stoi(algorithmIterationAmountStr);
 
-	//make iterationAmountStr is "" check
-	if(clusterAmount > 0 && iterationAmount > 0)
-	{
-		return make_pair(iterationAmount, clusterAmount);
-	}
+	if(clusterAmount > 0 && algorithmIterationAmount > 0)
+		return make_pair(algorithmIterationAmount, clusterAmount);
 	else
 	{
 		cout << "Please enter numbers larger than 0." << endl;
@@ -51,7 +48,13 @@ int AskForRetry()
 void executeKMeansRoutine()
 {
 	ifstream ifs;
-	ifs.open("/home/robert/Documents/Projects/dataminingexcersises/Opdracht 1 - KMeans/docs/wine.csv");
+	ifs.open("/home/robert/Documents/Projects/DataMiningExcersises/Excersise 1 - KMeans Clustering/docs/wine.csv");
+
+	if(!ifs.good())
+	{
+		cout << "CSV DOES NOT EXIST" << endl;
+	}
+
 
 	CsvParser parser;
 	vector<Point> parsedPoints = parser.parseToPoints(ifs);

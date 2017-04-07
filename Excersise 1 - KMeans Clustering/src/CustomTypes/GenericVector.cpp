@@ -17,7 +17,7 @@ float GenericVector::getEuclidDistance(GenericVector& other)
 {
     if (!this->VectorSizesEqual(other))
     {
-        //TODO MAKE THIS AN EXCEPTION
+        //Todo: Make this an exception instead.
         return -1.0;        
     }
 
@@ -59,7 +59,7 @@ GenericVector GenericVector::getRandomVector(int dimensionLength)
     //Mersenne Twister pseudo-random number generator
     mt19937 gen(rd());
  
-    //distributor in range TODO: GENERIFY THIS
+    //distributor in range Todo: Generify this
     uniform_int_distribution<> distributor(0, 1);
  
     vector<float> values;

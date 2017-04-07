@@ -7,7 +7,7 @@
 
 class KMeansController {
     private:
-        int iterationAmount;
+        int algorithmIterationAmount;
         int clusterAmount;
 
         vector<Point>& points;
@@ -17,7 +17,7 @@ class KMeansController {
         void printResult(KMeansIteration& iteration);
 
     public:
-        KMeansController(vector<Point> &p, int k, int c) : points(p)  { iterationAmount = k; clusterAmount = c; };
+        KMeansController(vector<Point> &p, int k, int c) : points(p)  { algorithmIterationAmount = k; clusterAmount = c; };
         void run();
                 
 };
