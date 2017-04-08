@@ -9,7 +9,6 @@ Source: http://eu.wiley.com/WileyCDA/WileyTitle/productCD-111866146X.html
 
 Run using:
 
-    cmake build/
     ./build/excersise1
 
 ### Excersise 2: Genetic algorithm (C#)
@@ -18,7 +17,6 @@ This program finds the best value of X for the maximization of the function `f(x
 
 Run using:
 
-    dotnet build
     dotnet run
 
 ### Excersise 3: SES/DES (Java, Processing library)
@@ -30,7 +28,6 @@ Source is mentioned in visualization.
 Run using:
 
     cd excersise3
-    mvn package
     mvn exec:java
 
 
