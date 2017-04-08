@@ -187,7 +187,6 @@ void KMeansIteration::runIteration()
             break;
     }
     sumOfSquaredErrors = computeSSE();
-    cout << "SSE is " << sumOfSquaredErrors << endl;
 }
 
 /*
