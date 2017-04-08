@@ -1,4 +1,4 @@
-# DataMiningExcersises
+# Data Mining Excersises
 
 ### Excersise 1: KMeans clustering (C++)
 
