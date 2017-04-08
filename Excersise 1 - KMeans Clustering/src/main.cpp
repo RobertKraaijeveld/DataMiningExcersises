@@ -45,17 +45,8 @@ int AskForRetry()
 		return 0;
 }
 
-void executeKMeansRoutine()
+void executeKMeansRoutine(ifstream& ifs)
 {
-	ifstream ifs;
-	ifs.open("/home/robert/Documents/Projects/DataMiningExcersises/Excersise 1 - KMeans Clustering/docs/wine.csv");
-
-	if(!ifs.good())
-	{
-		cout << "CSV DOES NOT EXIST" << endl;
-	}
-
-
 	CsvParser parser;
 	vector<Point> parsedPoints = parser.parseToPoints(ifs);
 
@@ -65,14 +56,24 @@ void executeKMeansRoutine()
 	kmeansController.run();
 
 	if(AskForRetry() == 1)
-		executeKMeansRoutine();
+		executeKMeansRoutine(ifs);
 	else
 		return;
-
 }
 
 int main()    
 {
-	executeKMeansRoutine();
+	ifstream ifs;
+	ifs.open("/home/robert/Documents/Projects/DataMiningExcersises/Excersise 1 - KMeans Clustering/docs/wine.csv");
+
+	if(ifs.good())
+	{
+		executeKMeansRoutine(ifs);
+	}
+	else
+	{
+		cout << "CSV File not found. Please check if the path in main.cpp is correct." << endl;				
+		cin.get();	
+	}
 	return 0;
 }
