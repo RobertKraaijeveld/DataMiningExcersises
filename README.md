@@ -2,7 +2,7 @@
 
 ### Excersise 1: KMeans clustering (C++)
 
-This program will cluster the fictional customers at a wineshop based on what wine-offers they took.
+This program will cluster the fictional customers at a wineshop based on what wine-offers they took. 
 Source: http://eu.wiley.com/WileyCDA/WileyTitle/productCD-111866146X.html
 
 Run using:
@@ -19,9 +19,9 @@ Run using:
     dotnet build
     dotnet run
 
-### Excersise 3: SES/DES (Java, processing)
+### Excersise 3: SES/DES (Java, Processing library)
 
-This program provides a SES and DES smoothing and forecast for the fictional sales numbers of swords. 
+This program provides a SES and DES smoothing and forecast visualization for the fictional sales numbers of swords. Source is mentioned in visualization.
 
 Run using:
 
